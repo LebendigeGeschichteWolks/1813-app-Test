@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Liebertwolkwitz 1813</title>
+    
+    <style>
+        /* Lokale Einbindung der Schriftarten */
+        @font-face {
+            font-family: 'Vollkorn';
+            src: url('fonts/Vollkorn-Regular.woff2') format('woff2');
+            font-weight: 100 900;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Vollkorn';
+            src: url('fonts/Vollkorn-Italic.woff2') format('woff2');
+            font-weight: 100 900;
+            font-style: italic;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Ubuntu';
+            src: url('fonts/Ubuntu-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Ubuntu';
+            src: url('fonts/Ubuntu-Medium.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Ubuntu';
+            src: url('fonts/Ubuntu-Bold.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Ubuntu';
+            src: url('fonts/Ubuntu-Light-Italic.woff2') format('woff2');
+            font-weight: 300;
+            font-style: italic;
+            font-display: swap;
+        }
+
+        :root {
+            --bg-pattern: url("images/paper-texture.webp");
+            --bg-phone: #fbf9f5; 
+            --bg-card: #ffffff; 
+            --bg-linktree-btn: #ffffff; 
+            --bg-subtab-inactive: rgba(255, 255, 255, 0.95); 
+            --text-main: #000000;
+            --text-muted: #444444;
+            --accent: #8b0000;
+            --nav-bg: #ffffff; 
+            --border-color: #cccccc; 
+            --link-color: #0044cc; 
+            --header-link-color: #000000;
+            --divider-color: #888888; 
+            --hist-color: #2c3e50; /* Dynamische Farbe für die Kategorie "Historisches" */
+        }
+
+        .dark-theme {
+            --bg-pattern: linear-gradient(rgba(18, 18, 18, 0.92), rgba(18, 18, 18, 0.92)), url("images/paper-texture.webp");
+            --bg-phone: #121212;
+            --bg-card: #2d2d2d;
+            --bg-linktree-btn: #1e1e1e; 
+            --bg-subtab-inactive: #000000; 
+            --text-main: #ffffff; 
+            --text-muted: #cccccc; 
+            --accent: #ff4d4d;
+            --nav-bg: #1a1a1a;
+            --border-color: #444444;
+            --link-color: #66b3ff; 
+            --header-link-color: #ffffff;
+            --divider-color: #555555;
+            --hist-color: #ffffff; /* Im Darkmode Invertiert (Weiß) */
+        }
+
+        #loading-overlay {
+            position: fixed; top:0; left:0; width: 100%; height: 100%;
+            background: var(--bg-phone); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .horse-loader { font-size: 50px; animation: trot 1s infinite alternate; }
+        @keyframes trot { from { transform: translateY(0); } to { transform: translateY(-20px); } }
+
+        .gazette-title { 
+            font-family: 'Vollkorn', serif !important; 
+            font-size: 26px !important; 
+            margin: 15px 0 20px 0; 
+            text-align: center; 
+            color: var(--text-main) !important; 
+            border-bottom: none !important;
+            padding-bottom: 0 !important;
+            font-weight: 700;
+        }
+
+        .dark-theme .main-app-logo, 
+        .dark-theme .small-app-logo {
+            filter: invert(1);
+        }
+
+        /* Helle Links im FAQ für den Dark-Mode */
+        .dark-theme .faq-answer a {
+            color: #88ccff !important;
+            font-weight: bold;
+        }
+
+        .icon-wrapper {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .linktree-icon {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+        }
+
+        .fallback-emoji {
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            background-color: var(--bg-phone);
+            margin: 0;
+            padding: 0;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            height: 100dvh; 
+            overflow: hidden;
+        }
+        
+        .phone-container {
+            width: 100%;
+            height: 100%;
+            max-width: 480px; 
+            background-image: var(--bg-pattern);
+            background-repeat: repeat;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .phone-header {
+            height: 50px;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 16px;
+            font-weight: bold;
+            background-color: var(--nav-bg);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            position: relative;
+        }
+
+        .header-title-link {
+            color: var(--header-link-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .darkmode-toggle, .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .offline-banner {
+            background-color: #000000;
+            color: #ffffff;
+            padding: 12px 15px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            border-bottom: 1px solid #222;
+            display: none; 
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            animation: slideDown 0.3s ease-out;
+            z-index: 90;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        .screen-content {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: none;
+            -webkit-overflow-scrolling: touch; 
+        }
+        .screen-content.active {
+            display: block;
+        }
+
+        .nav-bar {
+            height: 60px;
+            background-color: var(--nav-bg);
+            backdrop-filter: blur(5px);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            box-sizing: content-box;
+        }
+        .nav-item {
+            font-size: 13px;
+            color: var(--text-muted);
+            cursor: pointer;
+            text-align: center;
+            flex: 1;
+            padding: 5px 1px;
+            line-height: 1.3;
+        }
+        .nav-item.active {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        h1, h2, h3 { 
+            font-family: 'Vollkorn', serif; 
+            color: var(--text-main); 
+            margin-top: 0; 
+        }
+        h1 { font-size: 24px; border-bottom: 2px solid var(--accent); padding-bottom: 5px; line-height: 1.2; }
+        h2 { font-size: 18px; margin-top: 20px; margin-bottom: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
+        h3 { font-size: 16px; margin-top: 15px; margin-bottom: 5px; color: var(--text-main); font-weight: 700; }
+        p { color: var(--text-main); line-height: 1.5; font-size: 14px; }
+        a { color: var(--link-color); text-decoration: underline; font-weight: 500; }
+
+        .start-wrapper { text-align: center; padding-bottom: 10px; }
+        .main-app-logo { width: 100%; max-width: 320px; height: auto; margin: 10px auto 20px auto; display: block; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+        
+        .h1-center { font-size: 26px; margin: 10px 0; border-bottom: none; padding-bottom: 0; }
+        .intro-text { font-size: 17px; line-height: 1.6; margin: 15px 0; text-align: left; }
+        .link-highlight { color: var(--link-color); text-decoration: underline; cursor: pointer; font-weight: bold; }
+        
+        #ueber-uns-section { margin-top: 30px; padding: 15px; background: var(--bg-card); border-radius: 10px; border-left: 4px solid var(--accent); text-align: left; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        #ueber-uns-section h2 { border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-top: 0; }
+
+        .card { 
+            background: var(--bg-card); 
+            padding: 15px; 
+            border-radius: 10px; 
+            margin-bottom: 15px; 
+            border-left: 4px solid var(--accent);
+            color: var(--text-main);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .small-app-logo {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            float: right;
+            margin-left: 12px;
+            margin-bottom: 8px;
+            background-color: transparent;
+        }
+
+        .feedback-btn {
+            display: block;
+            text-align: center;
+            background-color: var(--accent);
+            color: #ffffff !important; 
+            padding: 12px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 20px 0 15px 0;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .secondary-btn { 
+            background-color: var(--bg-card); 
+            color: var(--text-main) !important; 
+            border: 1px solid var(--border-color); 
+            margin-top: 10px; 
+            padding: 10px; 
+            font-weight: 500;
+        }
+        
+        .linktree-title {
+            font-size: 18px;
+            margin: 25px 0 10px 0;
+            font-weight: bold; 
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+            color: var(--text-main); 
+        }
+        
+        .linktree-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background-color: var(--bg-linktree-btn); 
+            color: var(--text-main) !important;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent);
+            padding: 12px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            margin: 8px 0;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            transition: background-color 0.2s;
+        }
+        .linktree-btn:active {
+            background-color: var(--border-color);
+        }
+
+        .sub-nav-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .sub-grid-item {
+            text-align: center;
+            font-size: 13px;
+            padding: 12px 5px; 
+            cursor: pointer;
+            border-radius: 8px;
+            background-color: var(--bg-subtab-inactive); 
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            font-weight: 500;
+        }
+        .sub-grid-item.active {
+            background-color: var(--accent);
+            color: #ffffff !important;
+            font-weight: bold;
+            border-color: var(--accent);
+        }
+
+        .sub-nav-historic {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+        .sub-nav-item-historic {
+            text-align: center;
+            font-size: 12px;
+            padding: 12px 2px;
+            cursor: pointer;
+            border-radius: 8px;
+            background-color: var(--bg-subtab-inactive); 
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sub-nav-item-historic.active {
+            background-color: var(--accent);
+            color: #ffffff !important;
+            font-weight: bold;
+            border-color: var(--accent);
+        }
+        
+        .sub-content { display: none; }
+        .sub-content.active { display: block; }
+
+        .calendar-days {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .day-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--accent);
+            background: var(--bg-subtab-inactive);
+            color: var(--text-main);
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            text-align: center;
+        }
+        .day-btn.active {
+            background: var(--accent);
+            color: #ffffff !important;
+        }
+
+        .search-input, .filter-select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            margin-bottom: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background-color: var(--accent);
+            color: white;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        details.faq-item { 
+            background: var(--bg-card); 
+            border-radius: 8px; 
+            margin-bottom: 10px; 
+            border-left: 4px solid var(--accent); 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            color: var(--text-main); 
+        }
+        details.faq-item summary { 
+            padding: 15px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            list-style: none; 
+            display: flex; 
+            justify-content: space-between; 
+            outline: none; 
+            font-size: 14px;
+            color: var(--text-main); 
+        }
+        details.faq-item summary::-webkit-details-marker { display: none; }
+        details.faq-item summary::after { content: '▼'; font-size: 12px; transition: transform 0.3s; color: var(--accent); }
+        details.faq-item[open] summary::after { transform: rotate(180deg); }
+        .faq-answer { 
+            padding: 0 15px 15px 15px; 
+            font-size: 14px; 
+            line-height: 1.5; 
+            border-top: 1px dashed var(--border-color); 
+            margin-top: 0; 
+            padding-top: 10px; 
+            color: var(--text-muted); 
+        }
+
+        /* Zeitstrahl Dark-Mode sicher gemacht */
+        .timeline { position: relative; padding-left: 20px; margin-top: 20px; }
+        .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent); }
+        .timeline-item { position: relative; margin-bottom: 25px; }
+        .timeline-dot { position: absolute; left: -26px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--bg-card); border: 2px solid var(--accent); }
+        .timeline-content { background: var(--bg-card); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 13px; line-height: 1.5; color: var(--text-main); }
+        .timeline-date { font-weight: bold; color: var(--accent); margin-bottom: 5px; display: block;}
+
+        .content-divider {
+            border: 0;
+            border-top: 1px solid var(--divider-color); 
+            margin: 25px 0;
+        }
+
+        .impressum-box {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--border-color);
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+        .impressum-box h3 { font-size: 14px; margin-top: 0; border: none; padding: 0; color: var(--text-main); font-weight: bold; }
+        .impressum-divider { border: 0; border-top: 1px solid var(--border-color); margin: 15px 0; }
+        .loader { text-align: center; font-style: italic; color: var(--text-muted); padding: 20px; }
+    </style>
+</head>
+<body>
+
+<div id="loading-overlay">
+    <div class="horse-loader">🐎</div>
+    <p>Das Dorf bereitet sich vor...</p>
+</div>
+
+<div class="phone-container" id="phone">
+    
+    <div class="phone-header">
+        <a href="https://www.liebertwolkwitz-1813.de" target="_blank" class="header-title-link">Liebertwolkwitz 1813</a>
+        <div class="header-controls">
+            <button class="darkmode-toggle" onclick="toggleDarkMode()" id="theme-icon">🌙</button>
+            <button class="menu-toggle" onclick="toggleLinktree()" title="Menü">🔗</button>
+        </div>
+    </div>
+
+    <div class="offline-banner" id="pigeon-banner">
+        <span style="font-size: 20px; color: #ff4d4d;">🕊️</span> 
+        <span><strong>Gurrr... wir haben die Verbindung verloren, ich arbeite dran!</strong></span>
+    </div>
+    
+    <div id="start" class="screen-content active">
+        <div class="start-wrapper">
+            <img src="images/logos/logo1813.webp" alt="Liebertwolkwitz 1813 Logo" class="main-app-logo" onerror="handleImageError(this)">
+            <h1 class="h1-center">Willkommen im<br>Jahre 1813!</h1>
+            
+            <p class="intro-text">Ihr habt das Dorf in eurer Hand: Programm, Lageplan, historische Hintergründe, Veranstaltungen und eure häufigsten Fragen.</p>
+            
+            <div class="card" style="text-align: center; margin: 25px 0;">
+                <h3 style="margin-top:0; font-weight: bold;">Ihr besucht uns außerhalb vom Oktober?</h3>
+                <p style="margin-bottom: 0;">Dann ist <span class="link-highlight" onclick="switchTab('veranstaltungen', document.getElementById('nav-btn-veranstaltungen'))">hier das Programm für das gesamte Jahr</span>.</p>
+            </div>
+            
+            <p class="intro-text">Wir wünschen euch viel Spaß und einen angenehmen sowie interessanten Aufenthalt.</p>
+            
+            <p class="intro-text">Euer Dorf im Jahre 1813, eure <span class="link-highlight" onclick="scrollToAbout('ueber-uns-eg')">Hofgenossenschaft</span> und eure <span class="link-highlight" onclick="scrollToAbout('ueber-uns-ev')">Lebendige Geschichte Wolks</span>.</p>
+            
+            <hr class="content-divider" style="border-top: 2px solid var(--accent); width: 60px; margin: 40px auto 30px auto;">
+        </div>
+        
+        <div id="ueber-uns-section">
+            <h2>Über uns</h2>
+            
+            <h3 id="ueber-uns-eg">Hofgenossenschaft Stiftsgut Liebertwolkwitz eG</h3>
+            <p><em>(kurz: Hofgenossenschaft)</em></p>
+            <img src="images/logos/logoeg.webp" alt="Logo eG" class="small-app-logo" onerror="handleImageError(this)">
+            <p>Wir haben uns 2010 mit dem Ziel gegründet, historische Veranstaltungen zu ermöglichen und unser Stiftsgut aus- und umzubauen. Seit 2012 sind wir im Besitz des Geländes und seit 2008 veranstalten wir unsere historischen Märkte sowie viele weitere Kulturveranstaltungen. <br> Alle Beteiligten sind mit viel Herzblut ehrenamtlich dabei. Deswegen fühlt sich unser Dorf auch so echt an: weil richtig viel Zeit & Liebe drin steckt.</p>
+            <p style="clear: both;">Weitere Infos: <a href="https://www.hofgenossenschaft.com" target="_blank">www.hofgenossenschaft.com</a></p>
+            
+            <hr class="content-divider" style="margin: 20px 0;">
+            
+            <h3 id="ueber-uns-ev">Liebertwolkwitzer Verein für lebendige Geschichte e.V.</h3>
+            <p><em>(kurz: Lebendige Geschichte Wolks)</em></p>
+            <img src="images/logos/logoev.webp" alt="Logo e.V." class="small-app-logo" onerror="handleImageError(this)">
+            <p>Wir haben uns 2024 gegründet und verfolgen das Ziel, die Geschichte unserer Region zu erforschen und das erlangte Wissen möglichst vielen zugänglich zu machen. <br> Ein besonderer Fokus unserer Arbeit liegt auf dem Leben um 1800, weshalb wir das "Dorf im Jahre 1813" tatkräftig unterstützen. Außerhalb vom Oktober bieten wir eine breite Palette an Veranstaltungen (Schul-Hof, Führungen, Lesungen) und mit unseren Onlineangeboten wollen wir Geschichte für jede und jeden greifbar machen.</p>
+            <p style="clear: both;">Weitere Infos: <a href="https://www.lebendigegeschichte-lww.de" target="_blank">www.lebendigegeschichte-lww.de</a></p>
+        </div>
+        
+        <a href="mailto:info@lebendigegeschichte-lww.de?subject=Feedback%20zur%20App%20Leipzig%201813" class="feedback-btn">
+            ✉️ Feedback zur App senden<br>
+            <small style="font-size: 10px; font-weight: normal;">Öffnet sich nichts? Dann einfach an info@lebendigegeschichte-lww.de schreiben</small>
+        </a>
+
+        <div class="impressum-box">
+            <h3>Impressum</h3>
+            <p>
+                <strong>Verantwortlich für „Liebertwolkwitz – ein Dorf im Jahre 1813“:</strong><br>
+                Hofgenossenschaft Stiftsgut Liebertwolkwitz eG<br>
+                Alte Tauchaer Str. 1, 04288 Leipzig<br>
+                <a href="https://www.hofgenossenschaft.com" target="_blank">www.hofgenossenschaft.com</a>
+            </p>
+            <hr class="impressum-divider">
+            <p>
+                <strong>Verantwortlich für App und Inhalte:</strong><br>
+                Liebertwolkwitzer Verein für lebendige Geschichte e.V.<br>
+                Güldengossaer Str. 18c, 04288 Leipzig<br>
+                <a href="https://www.lebendigegeschichte-lww.de" target="_blank">www.lebendigegeschichte-lww.de</a>
+            </p>
+        </div>
+    </div>
+
+    <div id="liebertwolkwitz" class="screen-content">
+        <h1>Liebertwolkwitz 1813</h1>
+        
+        <div class="sub-nav-grid">
+            <div id="sub-btn-programm" class="sub-grid-item active" onclick="switchSubTabEvent('sub-programm', this)">📅 Programm</div>
+            <div id="sub-btn-lageplan" class="sub-grid-item" onclick="switchSubTabEvent('sub-lageplan', this)">🗺️ Lageplan</div>
+            <div id="sub-btn-wasistwo" class="sub-grid-item" onclick="switchSubTabEvent('sub-wasistwo', this)">📍 Was ist wo?</div>
+            <div id="sub-btn-faq" class="sub-grid-item" onclick="switchSubTabEvent('sub-faq', this)">❓ Fragen</div>
+            <div id="sub-btn-umfrage" class="sub-grid-item" onclick="switchSubTabEvent('sub-umfrage', this)">🖊️ Umfrage</div>
+        </div>
+
+        <div id="sub-programm" class="sub-content active">
+            <input type="text" id="search-program" class="search-input" placeholder="🔍 Programm nach Titel oder Uhrzeit durchsuchen..." onkeyup="renderEvents()">
+            <div class="calendar-days" id="calendar-days-container"></div>
+            <div id="program-list"><div class="loader">Programm wird live geladen...</div></div>
+        </div>
+
+        <div id="sub-lageplan" class="sub-content">
+            <iframe class="map-iframe" style="width: 100%; height: 340px; border: 0; border-radius: 10px;" allowfullscreen allow="geolocation" src="https://umap.openstreetmap.de/de/map/karte-dorf-im-jahre-1813_141462?scaleControl=false&miniMap=false&scrollWheelZoom=false&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&homeControl=false&captionControl=false&locateControl=true"></iframe>
+        </div>
+
+        <div id="sub-wasistwo" class="sub-content">
+            <h2>Was ist wo?</h2>
+            <input type="text" id="search-location" class="search-input" placeholder="🔍 Nach Angeboten suchen..." onkeyup="renderLocations()">
+            
+            <select id="filter-ort" class="filter-select" onchange="renderLocations()">
+                <option value="alle">--- Alle Orte anzeigen ---</option>
+                <option value="Markt">Markt</option>
+                <option value="Kirchhof">Kirchhof</option>
+                <option value="Liebnerhof (Markt 3)">Liebnerhof (Markt 3)</option>
+                <option value="Stiftsgut (Markt 11)">Stiftsgut (Markt 11)</option>
+                <option value="Gendarmeriestube (Markt 2)">Gendarmeriestube (Markt 2)</option>
+                <option value="Museumshof (Alte Tauchaer 1)">Museumshof (Alte Tauchaer 1)</option>
+                <option value="Kuhweide">Kuhweide</option>
+            </select>
+
+            <select id="filter-kategorie" class="filter-select" onchange="renderLocations()">
+                <option value="alle">--- Alle Kategorien anzeigen ---</option>
+                <option value="Essen & Trinken">Essen & Trinken</option>
+                <option value="Handwerk">Handwerk</option>
+                <option value="Historisches">Historisches</option>
+                <option value="Einkaufen">Einkaufen</option>
+                <option value="für Kinder">für Kinder</option>
+                <option value="Service">Service</option>
+                <option value="Musik">Musik</option>
+            </select>
+
+            <div id="location-list" style="margin-top: 15px;"></div>
+        </div>
+
+        <div id="sub-faq" class="sub-content">
+            <h2>Häufige Fragen (FAQ)</h2>
+            <div id="faq-list">
+                <div class="loader">Antworten werden aus dem Kontor geholt...</div>
+            </div>
+        </div>
+
+        <div id="sub-umfrage" class="sub-content">
+            <h2>Umfrage zur Veranstaltung</h2>
+            <p>Wir werden jedes Jahr besser aber sind bei Weitem nicht perfekt. Bitte nimm dir die Zeit und beantworte diese kleine Umfrage zu unserem Dorf im Jahre 1813. Es dauert nur wenige Minuten und hilft uns wirklich ungemein. Danke 🎉</p>
+            <a href="https://forms.gle/zSpZmbgDV2Vin3md9" target="_blank" class="feedback-btn">
+                📋 Zur Umfrage
+            </a>
+        </div>
+    </div>
+
+    <div id="veranstaltungen" class="screen-content">
+        <h1>Veranstaltungen 2026</h1>
+        <p>Hier findet ihr alle weiteren Märkte und Veranstaltungen außerhalb des großen Festwochenendes im Oktober.</p>
+        
+        <input type="text" id="search-yearly" class="search-input" placeholder="🔍 Nach Titel, Ort oder Veranstalter durchsuchen..." onkeyup="renderYearlyEvents()">
+        
+        <div id="yearly-list">
+            <div class="loader">Termine werden live geladen...</div>
+        </div>
+    </div>
+
+    <div id="historisches" class="screen-content">
+        <h1>Historisches</h1>
+        
+        <div class="sub-nav-historic">
+            <div id="sub-btn-hist-karte" class="sub-nav-item-historic active" onclick="switchSubTab('sub-hist-karte', this)">🗺️ Apelsteine</div>
+            <div id="sub-btn-hist-lexikon" class="sub-nav-item-historic" onclick="switchSubTab('sub-hist-lexikon', this)">📖 Lexikon</div>
+            <div id="sub-btn-hist-gazette" class="sub-nav-item-historic" onclick="switchSubTab('sub-hist-gazette', this)">📰 Gazette</div>
+            <div id="sub-btn-hist-timeline" class="sub-nav-item-historic" onclick="switchSubTab('sub-hist-timeline', this)">⏳ Völkerschlacht</div>
+        </div>
+
+        <div id="sub-hist-karte" class="sub-content active">
+            <iframe class="map-iframe" style="width: 100%; height: 340px; border: 0; border-radius: 10px;" allowfullscreen allow="geolocation" src="https://umap.openstreetmap.de/de/map/apelsteine-inkl-bilder-ausfuhrlichen-informationen_94176?scaleControl=false&miniMap=false&scrollWheelZoom=false&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=true"></iframe>
+            <p style="margin-top: 5px; font-size: 12px; text-align: center;"><a href="https://umap.openstreetmap.de/de/map/apelsteine-inkl-bilder-ausfuhrlichen-informationen_94176?scaleControl=false&miniMap=false&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=true" target="_blank">Vollbildanzeige öffnen</a></p>
+        </div>
+
+        <div id="sub-hist-lexikon" class="sub-content">
+            <h2>Lexikon</h2>
+            <input type="text" id="search-lexikon" class="search-input" placeholder="🔍 Eintrag suchen..." onkeyup="renderLexikon()">
+            <div id="lexikon-list">
+                <div class="loader">Wissen wird entstaubt...</div>
+            </div>
+        </div>
+
+        <div id="sub-hist-gazette" class="sub-content">
+            <h2 class="gazette-title">Actuelle Ausgabe</h2>
+            <div id="gazette-content">
+                <div class="loader">Gazette wird aus dem Archiv geholt...</div>
+            </div>
+            <a href="https://www.lebendigegeschichte-lww.de/gazette" target="_blank" class="feedback-btn" style="margin-top: 25px;">
+                📚 Ältere Ausgaben ansehen
+            </a>
+        </div>
+
+        <div id="sub-hist-timeline" class="sub-content">
+            <h2>Chronik der Völkerschlacht</h2>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Die wichtigsten historischen Meilensteine rund um Liebertwolkwitz 1813.</p>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">14. Oktober 1813</span>
+                        Das größte Kavalleriegefecht der Weltgeschichte entbrennt in der südlichen Ebene vor Liebertwolkwitz.
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">16. Oktober 1813</span>
+                        Die blutigen Gefechte ziehen sich bis in den Dorfkern von Liebertwolkwitz.
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">18. Oktober 1813</span>
+                        Entscheidungstag: Die verbündeten Truppen drängen die französische Armee zurück in Richtung Leipzig.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card" style="border-left-color: #777; margin-top: 20px; font-style: italic; font-size:12px;">
+                (Dieser Zeitstrahl kann von uns noch mit echten, detaillierten Fakten gefüllt werden!)
+            </div>
+        </div>
+    </div>
+
+    <div id="linktree" class="screen-content">
+        <button onclick="toggleLinktree()" class="linktree-btn" style="width: 100%; justify-content: center; background-color: var(--nav-bg); margin-bottom: 15px; border-left: 1px solid var(--border-color);">
+            ✖️ Schließen
+        </button>
+
+        <h1>Mehr Links</h1>
+        
+        <a href="https://www.liebertwolkwitz-1813.de" target="_blank" class="linktree-btn" style="border-left-width: 6px;">
+            <div class="icon-wrapper">
+                <img src="images/icons/website.webp" alt="" class="linktree-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                <span class="fallback-emoji" style="display: none;">🌐</span>
+            </div>
+            <strong>Website von Liebertwolkwitz 1813</strong>
+        </a>
+        
+        <hr class="content-divider">
+        
+        <div class="linktree-title">Hofgenossenschaft</div>
+        <a href="https://www.hofgenossenschaft.com" target="_blank" class="linktree-btn">
+            <div class="icon-wrapper">
+                <img src="images/icons/website.webp" alt="" class="linktree-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                <span class="fallback-emoji" style="display: none;">💻</span>
+            </div>
+            Website
+        </a>
+        <a href="https://www.instagram.com/" target="_blank" class="linktree-btn">
+            <div class="icon-wrapper">
+                <img src="images/icons/instagram.webp" alt="" class="linktree-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                <span class="fallback-emoji" style="display: none;">📸</span>
+            </div>
+            Instagram
+        </a>
+        <a href="https://wa.me/" target="_blank" class="linktree-btn">
+            <div class="icon-wrapper">
+                <img src="images/icons/whatsapp.webp" alt="" class="linktree-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                <span class="fallback-emoji" style="display: none;">💬</span>
+            </div>
+            WhatsApp
+        </a>
+        <a href="https://www.facebook.com/" target="_blank" class="linktree-btn">
+            <div class="icon-wrapper">
+                <img src="images/icons/facebook.webp" alt="" class="linktree-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                <span class="fallback-emoji" style="display: none;">👥</span>
+            </div>
+            Facebook
+        </a>
+        
+        <hr class="content-divider">
+        
+        <div class="linktree-title">Lebendige Geschichte Wolks</div>
+        <a href="https://www.lebendigegeschichte-lww.de" target="_blank" class="linktree-btn">
+            <div class="icon-wrapper">
+                <img src="images/icons/website.webp" alt="" class="linktree-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                <span class="fallback-emoji" style="display: none;">💻</span>
+            </div>
+            Website
+        </a>
+        <a href="https://www.instagram.com/" target="_blank" class="linktree-btn">
+            <div class="icon-wrapper">
+                <img src="images/icons/instagram.webp" alt="" class="linktree-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                <span class="fallback-emoji" style="display: none;">📸</span>
+            </div>
+            Instagram
+        </a>
+        <a href="https://www.tiktok.com/" target="_blank" class="linktree-btn">
+            <div class="icon-wrapper">
+                <img src="images/icons/tiktok.webp" alt="" class="linktree-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                <span class="fallback-emoji" style="display: none;">🎵</span>
+            </div>
+            TikTok
+        </a>
+        <a href="https://www.youtube.com/" target="_blank" class="linktree-btn">
+            <div class="icon-wrapper">
+                <img src="images/icons/youtube.webp" alt="" class="linktree-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                <span class="fallback-emoji" style="display: none;">🎥</span>
+            </div>
+            YouTube
+        </a>
+        <a href="https://www.facebook.com/" target="_blank" class="linktree-btn">
+            <div class="icon-wrapper">
+                <img src="images/icons/facebook.webp" alt="" class="linktree-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                <span class="fallback-emoji" style="display: none;">👥</span>
+            </div>
+            Facebook
+        </a>
+    </div>
+
+    <div class="nav-bar">
+        <div id="nav-btn-start" class="nav-item active" onclick="switchTab('start', this)">🏠<br>Start</div>
+        <div id="nav-btn-liebertwolkwitz" class="nav-item" onclick="switchTab('liebertwolkwitz', this)">🎪<br>Wolks 1813</div>
+        <div id="nav-btn-veranstaltungen" class="nav-item" onclick="switchTab('veranstaltungen', this)">📅<br>Termine</div>
+        <div id="nav-btn-historisches" class="nav-item" onclick="switchTab('historisches', this)">⚔️<br>Historisches</div>
+    </div>
+</div>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+        .then(() => console.log('Service Worker registriert!'))
+        .catch((err) => console.log('Registrierung fehlgeschlagen', err));
+    }
+
+    const BASE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyz-fZLOzwwwL5AA5uTOi05L44PIyCCOOjAhXS5mwSh218lo9p_tvll8aA-DfjF4SwKcg/exec"; 
+
+    const PROGRAM_URL = BASE_SCRIPT_URL + "?action=programm";
+    const LOCATION_URL = BASE_SCRIPT_URL + "?action=wasistwo";
+    const YEARLY_URL = BASE_SCRIPT_URL + "?action=termine"; 
+    const FAQ_URL = BASE_SCRIPT_URL + "?action=faq"; 
+    const LEXIKON_URL = BASE_SCRIPT_URL + "?action=lexikon";
+    const GAZETTE_URL = BASE_SCRIPT_URL + "?action=gazette";
+
+    let globalEvents = [];
+    let globalLocations = [];
+    let globalYearlyEvents = []; 
+    let globalLexikon = [];
+    let detectedDays = []; 
+    let currentDayIndex = 0; 
+    let preLinktreeTab = 'start'; 
+
+    const categoryColors = {
+        "Essen & Trinken": "#d35400", 
+        "Handwerk": "#8e44ad",        
+        "Historisches": "var(--hist-color)", // Dynamisch für Invertierung
+        "Einkaufen": "#27ae60",       
+        "für Kinder": "#f39c12",      
+        "Service": "#7f8c8d",          
+        "Musik": "#3498db" 
+    };
+
+    const fallbackEvents = [
+        { id: "1", tag: "23.10.2026", zeit: "10:00", ort: "Marktplatz", titel: "Eröffnung des Dorfes (Fallback)", beschreibung: "Das historische Treiben beginnt." }
+    ];
+
+    const fallbackLocations = [
+        { ort: "Stiftsgut (Markt 11)", kategorien: ["Handwerk"], titel: "Die Seilerei (Fallback)", beschreibung: "Hier wird nach alter Tradition aus Hanf zähes Tauwerk gedreht." }
+    ];
+
+    const fallbackYearly = [
+        { titel: "Hof-Advent (Fallback)", ort: "Stiftsgut Liebertwolkwitz", tag: "1. - 3. Dez 2026", zeit: "14:00 - 20:00 Uhr", veranstalter: "Hofgenossenschaft", beschreibung: "Unser traditioneller, besinnlicher Weihnachtsmarkt auf dem Stiftsgut.", preis: "Eintritt frei", highlight: "Ja" },
+        { titel: "Historische Führungen (Fallback)", ort: "Dorfkern", tag: "Ganzjährig", zeit: "auf Anfrage", veranstalter: "Lebendige Geschichte Wolks", beschreibung: "Erlebt die Geschichte hautnah bei unseren geführten Rundgängen.", preis: "5,00 € pro Person", highlight: "" }
+    ];
+
+    // Neue globale Funktion für Bild-Fallbacks
+    function handleImageError(img) {
+        img.onerror = null; 
+        img.src = 'images/fallback/bildfb.webp';
+    }
+
+    // Neue Funktion für Karten-Offline-Fallback
+    function checkOnlineStatusForMaps() {
+        const isOnline = navigator.onLine;
+        const maps = document.querySelectorAll('.map-iframe');
+        
+        maps.forEach(map => {
+            if (!isOnline) {
+                map.style.display = 'none';
+                if (!map.parentElement.querySelector('.map-fallback')) {
+                    const fb = document.createElement('div');
+                    fb.className = 'map-fallback';
+                    fb.style.textAlign = 'center';
+                    fb.style.padding = '15px';
+                    fb.style.backgroundColor = 'var(--bg-card)';
+                    fb.style.borderRadius = '10px';
+                    fb.style.border = '1px solid var(--border-color)';
+                    fb.innerHTML = `
+                        <img src="images/fallback/kartefb.webp" style="width:100%; border-radius: 8px; margin-bottom: 10px;" onerror="this.style.display='none';">
+                        <p style="font-weight:bold; margin:0; font-size:14px; color:var(--text-main);">Ich habe diese Karte wohl verloren. Prüfe deine Verbindung!📯</p>`;
+                    map.parentElement.appendChild(fb);
+                }
+            } else {
+                map.style.display = 'block';
+                const fb = map.parentElement.querySelector('.map-fallback');
+                if (fb) fb.remove();
+            }
+        });
+    }
+
+    window.onload = function() {
+        setTimeout(() => {
+            const loader = document.getElementById('loading-overlay');
+            if(loader) {
+                loader.style.transition = "opacity 0.5s ease";
+                loader.style.opacity = "0";
+                setTimeout(() => loader.style.display = 'none', 500);
+            }
+        }, 1500);
+
+        const savedTheme = localStorage.getItem('app-theme');
+        const phone = document.getElementById('phone');
+        const icon = document.getElementById('theme-icon');
+        if (savedTheme === 'dark') {
+            phone.classList.add('dark-theme');
+            icon.innerText = '☀️';
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        updateOnlineStatus(); 
+
+        loadFromCache();
+        restoreLastSession();
+
+        fetchProgramData();
+        fetchLocationData();
+        fetchYearlyData();
+        fetchFaqData(); 
+        fetchLexikonData(); 
+        fetchGazetteData();
+    }
+
+    function loadFromCache() {
+        const cProg = localStorage.getItem('cache-programm');
+        if(cProg) { loadInitialData(JSON.parse(cProg)); } 
+        else { loadInitialData(fallbackEvents); } 
+        
+        const cLoc = localStorage.getItem('cache-wasistwo');
+        if(cLoc) { globalLocations = JSON.parse(cLoc); renderLocations(); }
+        else { globalLocations = fallbackLocations; renderLocations(); }
+        
+        const cYear = localStorage.getItem('cache-termine');
+        if(cYear) { globalYearlyEvents = JSON.parse(cYear); renderYearlyEvents(); }
+        else { globalYearlyEvents = fallbackYearly; renderYearlyEvents(); }
+
+        const cFaq = localStorage.getItem('cache-faq');
+        if(cFaq) { renderFaq(JSON.parse(cFaq)); }
+
+        const cLex = localStorage.getItem('cache-lexikon');
+        if(cLex) { globalLexikon = JSON.parse(cLex); renderLexikon(); }
+    }
+
+    function isPastEvent(dateStr) {
+        if (!dateStr || dateStr.toLowerCase().includes('ganzjährig')) return false;
+        let matches = [...dateStr.matchAll(/(\d{1,2})\.(\d{1,2})\.?(20\d{2})?/g)];
+        if (matches.length > 0) {
+            let lastMatch = matches[matches.length - 1];
+            let d = parseInt(lastMatch[1], 10);
+            let m = parseInt(lastMatch[2], 10) - 1; 
+            let y = lastMatch[3] ? parseInt(lastMatch[3], 10) : new Date().getFullYear(); 
+            
+            let evDate = new Date(y, m, d);
+            let today = new Date();
+            today.setHours(0,0,0,0);
+            return evDate < today;
+        }
+        return false;
+    }
+
+    function jumpTo(tabId, subTabId) {
+        const navElement = document.getElementById('nav-btn-' + tabId);
+        if (navElement) {
+            switchTab(tabId, navElement);
+        } else {
+            document.querySelectorAll('.screen-content').forEach(screen => screen.classList.remove('active'));
+            document.querySelectorAll('.nav-bar .nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            localStorage.setItem('last-main-tab', tabId);
+        }
+        
+        if (subTabId) {
+            const btnId = subTabId.startsWith('sub-btn-') ? subTabId : 'sub-btn-' + subTabId.replace('sub-', '');
+            const subElementBtn = document.getElementById(btnId);
+            if(subElementBtn) {
+                if (tabId === 'liebertwolkwitz') {
+                    switchSubTabEvent(subTabId, subElementBtn);
+                } else if (tabId === 'historisches') {
+                    switchSubTab(subTabId, subElementBtn);
+                }
+            }
+        }
+    }
+
+    function toggleLinktree() {
+        const linktreeScreen = document.getElementById('linktree');
+        if (linktreeScreen.classList.contains('active')) {
+            const lastNavBtn = document.getElementById('nav-btn-' + preLinktreeTab);
+            if (lastNavBtn) switchTab(preLinktreeTab, lastNavBtn);
+            else jumpTo(preLinktreeTab);
+        } else {
+            const currentActiveScreen = document.querySelector('.screen-content.active');
+            if (currentActiveScreen && currentActiveScreen.id !== 'linktree') {
+                preLinktreeTab = currentActiveScreen.id;
+            }
+            jumpTo('linktree');
+        }
+    }
+
+    function scrollToAbout(elementId) {
+        const screen = document.getElementById('start');
+        const targetSection = document.getElementById(elementId);
+        if(screen && targetSection) {
+            screen.scrollTo({
+                top: targetSection.offsetTop - 15,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    function updateOnlineStatus() {
+        const banner = document.getElementById('pigeon-banner');
+        if (navigator.onLine) banner.style.display = 'none';
+        else banner.style.display = 'flex';
+        
+        checkOnlineStatusForMaps(); // Karten Status prüfen
+    }
+
+    function loadInitialData(eventsArray) {
+        let uniqueDays = new Set();
+        globalEvents = eventsArray;
+        
+        eventsArray.forEach(ev => {
+            if (ev.tag && ev.tag.trim() !== "") {
+                const standardized = standardizeDate(ev.tag.trim());
+                if (standardized) uniqueDays.add(standardized);
+            }
+        });
+        
+        detectedDays = Array.from(uniqueDays).sort();
+        if (detectedDays.length === 0) detectedDays = ["2026-10-23"];
+
+        determineActiveDay();
+        updateDayButtons();
+        renderEvents();
+    }
+
+    function determineActiveDay() {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const todayString = `${yyyy}-${mm}-${dd}`;
+        const matchingIndex = detectedDays.indexOf(todayString);
+        currentDayIndex = matchingIndex !== -1 ? matchingIndex : 0;
+    }
+
+    function updateDayButtons() {
+        const container = document.getElementById('calendar-days-container');
+        if (!container) return;
+        container.innerHTML = "";
+        
+        const weekdayNames = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+        
+        detectedDays.forEach((dayIso, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'day-btn';
+            if (index === currentDayIndex) btn.classList.add('active');
+            
+            let actualLabel = `Tag ${index + 1}`;
+            
+            if (dayIso && dayIso.includes('-')) {
+                const parts = dayIso.split('-');
+                const year = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10) - 1; 
+                const day = parseInt(parts[2], 10);
+                
+                const dateObj = new Date(year, month, day);
+                if (!isNaN(dateObj.getTime())) {
+                    actualLabel = weekdayNames[dateObj.getDay()];
+                }
+            }
+            
+            btn.innerText = formatButtonText(dayIso, actualLabel);
+            
+            btn.onclick = function() {
+                document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentDayIndex = index;
+                renderEvents();
+            };
+            
+            container.appendChild(btn);
+        });
+    }
+
+    function switchTab(tabId, element) {
+        if(tabId !== 'linktree') preLinktreeTab = tabId;
+        document.querySelectorAll('.screen-content').forEach(screen => screen.classList.remove('active'));
+        document.querySelectorAll('.nav-bar .nav-item').forEach(item => item.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        if (element) element.classList.add('active');
+        localStorage.setItem('last-main-tab', tabId);
+    }
+
+    function switchSubTab(subTabId, element) {
+        document.querySelectorAll('#historisches .sub-content').forEach(content => content.classList.remove('active'));
+        document.querySelectorAll('.sub-nav-item-historic').forEach(item => item.classList.remove('active'));
+        document.getElementById(subTabId).classList.add('active');
+        element.classList.add('active');
+        localStorage.setItem('last-sub-tab-historic', subTabId);
+    }
+
+    function switchSubTabEvent(subTabId, element) {
+        document.querySelectorAll('#liebertwolkwitz .sub-content').forEach(content => content.classList.remove('active'));
+        document.querySelectorAll('.sub-grid-item').forEach(item => item.classList.remove('active'));
+        document.getElementById(subTabId).classList.add('active');
+        element.classList.add('active');
+        localStorage.setItem('last-sub-tab-event', subTabId);
+    }
+
+    function restoreLastSession() {
+        const lastMainTab = localStorage.getItem('last-main-tab');
+        const lastSubTabEvent = localStorage.getItem('last-sub-tab-event');
+        const lastSubTabHist = localStorage.getItem('last-sub-tab-historic');
+
+        if (lastMainTab && document.getElementById(lastMainTab)) {
+            const navBtn = document.getElementById('nav-btn-' + lastMainTab);
+            if(navBtn) switchTab(lastMainTab, navBtn);
+            else jumpTo(lastMainTab);
+        }
+        if (lastSubTabEvent && document.getElementById(lastSubTabEvent)) {
+            const subBtn = document.getElementById('sub-btn-' + lastSubTabEvent.replace('sub-', ''));
+            if(subBtn) switchSubTabEvent(lastSubTabEvent, subBtn);
+        }
+        if (lastSubTabHist && document.getElementById(lastSubTabHist)) {
+            const subBtn = document.getElementById('sub-btn-' + lastSubTabHist);
+            if(subBtn) switchSubTab(lastSubTabHist, subBtn);
+        }
+    }
+
+    function formatButtonText(dateString, weekdayLabel) {
+        if (!dateString) return weekdayLabel;
+        const months = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+        if (dateString.includes('-')) {
+            const parts = dateString.split('-');
+            const day = parseInt(parts[2], 10);
+            const monthStr = months[parseInt(parts[1], 10) - 1] || "";
+            return `${weekdayLabel}, ${day}. ${monthStr}`;
+        }
+        return weekdayLabel;
+    }
+
+    function standardizeDate(dateStr) {
+        if (!dateStr) return "";
+        dateStr = dateStr.trim();
+        if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) return dateStr;
+        if (dateStr.includes('.')) {
+            const parts = dateStr.split('.');
+            if(parts.length >= 3) {
+                const day = parts[0].padStart(2, '0');
+                const month = parts[1].padStart(2, '0');
+                let year = parts[2].trim();
+                if(year.length === 2) year = "20" + year;
+                return `${year}-${month}-${day}`;
+            }
+        }
+        if (dateStr.length > 10 && dateStr.includes('-')) return dateStr.substring(0, 10);
+        return "";
+    }
+
+    function displayRenderError(containerId, technicalDetails) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = `
+            <div class="card" style="border-left-color: var(--accent); text-align: center; padding: 20px 15px;">
+                <span style="font-size: 28px; display:block; margin-bottom:10px;">📯</span>
+                <h3 style="margin: 0 0 5px 0; color: var(--accent);">Fehler aus dem Kontor!</h3>
+                <p style="margin: 0; font-size: 13px; color: var(--text-muted); line-height:1.4;">
+                    Das Google Skript meldet folgendes Problem:<br>
+                    <span style="font-size:12px; font-weight:bold; color:var(--accent); display:block; margin-top:5px;">${technicalDetails}</span>
+                </p>
+            </div>
+        `;
+    }
+
+    function displayGazetteError(technicalDetails) {
+        const container = document.getElementById('gazette-content');
+        if (container) {
+            container.innerHTML = `<div class="card" style="border-left-color: var(--accent); text-align: center; padding: 20px;">
+                <span style="font-size:28px;">🗞️</span>
+                <p style="margin-top:10px; font-weight:bold;">Der Zeitungsbote stottert...</p>
+                <p style="font-size:12px; color:var(--accent);">${technicalDetails || ''}</p>
+            </div>`;
+        }
+    }
+
+    function renderEvents() {
+        const listContainer = document.getElementById('program-list');
+        const query = document.getElementById('search-program').value.trim().toLowerCase();
+        listContainer.innerHTML = "";
+        const targetDayIso = detectedDays[currentDayIndex];
+
+        if (!targetDayIso) {
+            listContainer.innerHTML = '<div class="loader">Keine Programmpunkte geladen.</div>';
+            return;
+        }
+
+        const filtered = globalEvents.filter(ev => {
+            if (!ev.tag) return false;
+            const matchDay = standardizeDate(ev.tag.trim()) === targetDayIso;
+            let matchSearch = true;
+            if (query.length >= 2) {
+                const titleMatch = (ev.titel || "").toLowerCase().includes(query);
+                const descMatch = (ev.beschreibung || "").toLowerCase().includes(query);
+                const timeMatch = (ev.zeit || "").toLowerCase().includes(query);
+                const ortMatch = (ev.ort || "").toLowerCase().includes(query);
+                matchSearch = (titleMatch || descMatch || timeMatch || ortMatch);
+            }
+            return matchDay && matchSearch;
+        });
+
+        if (filtered.length === 0) {
+            listContainer.innerHTML = '<div class="loader">Keine Einträge für diesen Tag gefunden.</div>';
+            return;
+        }
+
+        filtered.sort((a, b) => (a.zeit || "").localeCompare(b.zeit || ""));
+        filtered.forEach(ev => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            let displayTime = ev.zeit || '';
+            if (displayTime.length >= 5) displayTime = displayTime.substring(0, 5);
+            
+            let highlightHtml = '';
+            if (ev.highlight && ev.highlight.trim().toLowerCase() === 'ja') {
+                highlightHtml = `<span class="star-icon" onclick="showStarTooltip(event)" style="cursor: pointer; float: right; font-size: 20px; margin-left: 8px; color: #ffcc00; -webkit-user-select: none; user-select: none;">⭐</span>`;
+            }
+
+            card.innerHTML = `
+                ${highlightHtml}
+                <strong>${displayTime} Uhr - ${ev.ort || ''}</strong>
+                <h3 style="font-size:16px; margin: 5px 0; font-family:'Vollkorn',serif; color:var(--accent); font-weight:bold;">${ev.titel || ''}</h3>
+                <p style="margin:0; font-size:13px; white-space: pre-wrap;">${ev.beschreibung || ''}</p>
+            `;
+            listContainer.appendChild(card);
+        });
+    }
+
+    function renderLocations() {
+        const listContainer = document.getElementById('location-list');
+        if (!listContainer) return;
+        const selectedOrt = document.getElementById('filter-ort').value;
+        const selectedKat = document.getElementById('filter-kategorie').value;
+        const query = document.getElementById('search-location').value.trim().toLowerCase();
+        listContainer.innerHTML = "";
+
+        const filtered = globalLocations.filter(loc => {
+            const matchOrt = (selectedOrt === "alle" || loc.ort === selectedOrt);
+            const matchKat = (selectedKat === "alle" || (loc.kategorien && loc.kategorien.includes(selectedKat)));
+            let matchSearch = true;
+            if (query.length >= 2) {
+                const titleMatch = (loc.titel || "").toLowerCase().includes(query);
+                const descMatch = (loc.beschreibung || "").toLowerCase().includes(query);
+                matchSearch = (titleMatch || descMatch);
+            }
+            return matchOrt && matchKat && matchSearch;
+        });
+
+        if (filtered.length === 0) {
+            listContainer.innerHTML = '<div class="loader">Keine Einträge gefunden.</div>';
+            return;
+        }
+
+        filtered.forEach(loc => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            let firstKat = (loc.kategorien && loc.kategorien.length > 0) ? loc.kategorien[0] : "";
+            let color = categoryColors[firstKat] || "var(--accent)";
+            card.style.borderLeftColor = color;
+            
+            let badgesHtml = '';
+            if (loc.kategorien && loc.kategorien.length > 0) {
+                loc.kategorien.forEach(kat => {
+                    let badgeColor = categoryColors[kat] || "var(--accent)";
+                    badgesHtml += `<span class="badge" style="background-color: ${badgeColor}; margin-right: 4px;">${kat}</span>`;
+                });
+            }
+            
+            card.innerHTML = `
+                <h3 style="font-size:16px; margin: 0 0 5px 0; font-family:'Vollkorn',serif; color:var(--accent); font-weight:bold;">${loc.titel || ''}</h3>
+                <p style="margin:0 0 5px 0; font-size: 13px;">📍 <strong>${loc.ort || ''}</strong></p>
+                <p style="margin:0 0 8px 0; font-size:13px; white-space: pre-wrap;">${loc.beschreibung || ''}</p>
+                ${badgesHtml}
+            `;
+            listContainer.appendChild(card);
+        });
+    }
+
+    function renderYearlyEvents() {
+        const listContainer = document.getElementById('yearly-list');
+        if (!listContainer) return;
+        const query = document.getElementById('search-yearly').value.trim().toLowerCase();
+        listContainer.innerHTML = "";
+
+        const filtered = globalYearlyEvents.filter(ev => {
+            if (isPastEvent(ev.tag)) return false; 
+            
+            if (query.length >= 2) {
+                const titleMatch = (ev.titel || "").toLowerCase().includes(query);
+                const descMatch = (ev.beschreibung || "").toLowerCase().includes(query);
+                const ortMatch = (ev.ort || "").toLowerCase().includes(query);
+                const zeitMatch = (ev.zeit || "").toLowerCase().includes(query);
+                const tagMatch = (ev.tag || "").toLowerCase().includes(query);
+                const veranstalterMatch = (ev.veranstalter || "").toLowerCase().includes(query);
+                return (titleMatch || descMatch || ortMatch || zeitMatch || tagMatch || veranstalterMatch);
+            }
+            return true;
+        });
+
+        if (filtered.length === 0) {
+            listContainer.innerHTML = '<div class="loader">Keine passenden Termine gefunden.</div>';
+            return;
+        }
+
+        filtered.forEach(ev => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            let datetimeStr = '';
+            if (ev.tag && ev.tag.trim() !== '') datetimeStr += `📅 ${ev.tag} `;
+            if (ev.zeit && ev.zeit.trim() !== '') datetimeStr += `| 🕒 ${ev.zeit}`;
+            if (!datetimeStr) datetimeStr = '📅 Datum & Zeit auf Anfrage';
+
+            let preisDisplay = (!ev.preis || ev.preis.trim() === "") ? "Eintritt frei" : ev.preis;
+
+            let highlightHtml = '';
+            if (ev.highlight && ev.highlight.trim().toLowerCase() === 'ja') {
+                highlightHtml = `<span class="star-icon" onclick="showStarTooltip(event)" style="cursor: pointer; float: right; font-size: 20px; margin-left: 8px; color: #ffcc00; -webkit-user-select: none; user-select: none;">⭐</span>`;
+            }
+
+            let linkHtml = (ev.link && ev.link.trim() !== "") ? `<a href="${ev.link}" target="_blank" class="feedback-btn secondary-btn" style="text-decoration:none;">🔗 Weitere Informationen</a>` : '';
+
+            card.innerHTML = `
+                ${highlightHtml}
+                <h3 style="font-size:16px; margin: 0 0 5px 0; font-family:'Vollkorn',serif; color:var(--accent); font-weight:bold;">${ev.titel || ''}</h3>
+                <strong style="display:block; margin-bottom:5px;">${datetimeStr}</strong>
+                <p style="margin: 0 0 4px 0; font-size: 13px;">📍 <strong>Ort:</strong> ${ev.ort || 'Liebertwolkwitz'}</p>
+                <p style="margin: 0 0 4px 0; font-size: 13px;">👤 <strong>Veranstalter:</strong> ${ev.veranstalter || 'Keine Angabe'}</p>
+                <p style="margin: 0 0 10px 0; font-size: 13px;">💰 <strong>Preis/Eintritt:</strong> ${preisDisplay}</p>
+                <p style="margin:0; font-size:13px; white-space: pre-wrap; color: var(--text-muted); border-top: 1px dashed var(--border-color); padding-top: 8px;">${ev.beschreibung || ''}</p>
+                ${linkHtml}
+            `;
+            listContainer.appendChild(card);
+        });
+    }
+
+    function renderFaq(faqArray) {
+        const container = document.getElementById('faq-list');
+        if(!container) return;
+        container.innerHTML = "";
+        
+        if(!faqArray || faqArray.length === 0) {
+            container.innerHTML = '<div class="card">Noch keine Fragen hinterlegt.</div>';
+            return;
+        }
+
+        const groupedFaqs = {};
+        faqArray.forEach(item => {
+            const sec = item.sektion || "Allgemein";
+            if (!groupedFaqs[sec]) groupedFaqs[sec] = { items: [], order: item.order };
+            groupedFaqs[sec].items.push(item);
+        });
+
+        const sortedSections = Object.keys(groupedFaqs).sort((a, b) => groupedFaqs[a].order - groupedFaqs[b].order);
+
+        sortedSections.forEach(sec => {
+            const secTitle = document.createElement('h3');
+            secTitle.innerText = sec;
+            secTitle.style.marginTop = '20px';
+            secTitle.style.marginBottom = '10px';
+            secTitle.style.borderBottom = '1px solid var(--border-color)';
+            container.appendChild(secTitle);
+
+            groupedFaqs[sec].items.forEach(item => {
+                if(item.frage) {
+                    const details = document.createElement('details');
+                    details.className = 'faq-item';
+                    details.innerHTML = `
+                        <summary>${item.frage}</summary>
+                        <div class="faq-answer">${item.antwort || 'Dazu haben wir aktuell keine Informationen.'}</div>
+                    `;
+                    container.appendChild(details);
+                }
+            });
+        });
+    }
+
+    function renderLexikon() {
+        const container = document.getElementById('lexikon-list');
+        if(!container) return;
+        const query = document.getElementById('search-lexikon').value.trim().toLowerCase();
+        container.innerHTML = "";
+        
+        if(!globalLexikon || globalLexikon.length === 0) {
+            container.innerHTML = '<div class="loader">Keine Lexikon-Einträge gefunden.</div>';
+            return;
+        }
+
+        const filtered = globalLexikon.filter(item => {
+            if (query.length >= 2) {
+                return (item.eintrag || "").toLowerCase().includes(query);
+            }
+            return true;
+        });
+
+        if (filtered.length === 0) {
+            container.innerHTML = '<div class="loader">Kein passender Eintrag gefunden.</div>';
+            return;
+        }
+
+        filtered.forEach(item => {
+            if(item.eintrag) {
+                const details = document.createElement('details');
+                details.className = 'faq-item';
+                
+                let imgHtml = '';
+                if (item.bild && item.bild.trim() !== '') {
+                    imgHtml = `<img src="${item.bild}" alt="${item.eintrag}" style="width:100%; border-radius:8px; margin-bottom:10px;" onerror="handleImageError(this)">`;
+                }
+
+                details.innerHTML = `
+                    <summary>${item.eintrag}</summary>
+                    <div class="faq-answer">
+                        ${imgHtml}
+                        ${item.inhalt || ''}
+                    </div>
+                `;
+                container.appendChild(details);
+            }
+        });
+    }
+
+    function showStarTooltip(event) {
+        event.stopPropagation(); 
+        const existing = document.getElementById('star-transient-tooltip');
+        if (existing) existing.remove();
+
+        const tooltip = document.createElement('div');
+        tooltip.id = 'star-transient-tooltip';
+        tooltip.innerText = 'extrem sehenswert';
+        tooltip.style.position = 'fixed';
+        tooltip.style.background = 'rgba(0, 0, 0, 0.85)';
+        tooltip.style.color = '#ffffff';
+        tooltip.style.padding = '6px 12px';
+        tooltip.style.borderRadius = '6px';
+        tooltip.style.fontSize = '12px';
+        tooltip.style.fontWeight = 'bold';
+        tooltip.style.zIndex = '10000';
+        tooltip.style.pointerEvents = 'none';
+        tooltip.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+        tooltip.style.transition = 'opacity 0.15s ease';
+
+        tooltip.style.left = (event.clientX - 60) + 'px';
+        tooltip.style.top = (event.clientY - 35) + 'px';
+
+        document.body.appendChild(tooltip);
+
+        setTimeout(() => {
+            tooltip.style.opacity = '0';
+            setTimeout(() => tooltip.remove(), 150);
+        }, 1000);
+    }
+
+    function fetchProgramData() {
+        fetch(PROGRAM_URL)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    displayRenderError('program-list', data.message);
+                    return;
+                }
+                if(data && data.length > 0) {
+                    localStorage.setItem('cache-programm', JSON.stringify(data));
+                    loadInitialData(data);
+                }
+            }).catch(err => {
+                console.log("Fehler beim Live-Laden.", err);
+                displayRenderError('program-list', 'Datenübertragung abgebrochen (CORS oder Netzwerkfehler)');
+            });
+    }
+
+    function fetchLocationData() {
+        fetch(LOCATION_URL)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    displayRenderError('location-list', data.message);
+                    return;
+                }
+                if(data && data.length > 0) {
+                    localStorage.setItem('cache-wasistwo', JSON.stringify(data));
+                    globalLocations = data;
+                    renderLocations();
+                }
+            }).catch(err => {
+                console.log("Fehler beim Live-Laden der Orte.", err);
+                displayRenderError('location-list', 'Verbindung zum Stiftsgut verloren (CORS oder Netzwerkfehler)');
+            });
+    }
+
+    function fetchYearlyData() {
+        fetch(YEARLY_URL)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    displayRenderError('yearly-list', data.message);
+                    return;
+                }
+                if (data && data.length > 0) {
+                    localStorage.setItem('cache-termine', JSON.stringify(data));
+                    globalYearlyEvents = data;
+                    renderYearlyEvents();
+                }
+            }).catch(err => {
+                console.log("Fehler beim Live-Laden des Jahresprogramms.", err);
+                displayRenderError('yearly-list', 'Archiv unleserlich (CORS oder Netzwerkfehler)');
+            });
+    }
+
+    function fetchFaqData() {
+        fetch(FAQ_URL)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('faq-list').innerHTML = `<p>${data.message}</p>`;
+                    return;
+                }
+                if (data && data.length > 0) {
+                    localStorage.setItem('cache-faq', JSON.stringify(data));
+                    renderFaq(data);
+                }
+            }).catch(err => {
+                console.log("Fehler beim Live-Laden FAQ", err);
+            });
+    }
+
+    function fetchLexikonData() {
+        fetch(LEXIKON_URL)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('lexikon-list').innerHTML = `<p>${data.message}</p>`;
+                    return;
+                }
+                if (data && data.length > 0) {
+                    localStorage.setItem('cache-lexikon', JSON.stringify(data));
+                    globalLexikon = data;
+                    renderLexikon();
+                }
+            }).catch(err => {
+                console.log("Fehler beim Live-Laden Lexikon", err);
+            });
+    }
+
+    function fetchGazetteData() {
+        fetch(GAZETTE_URL)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    displayGazetteError(data.message);
+                    return;
+                }
+                const container = document.getElementById('gazette-content');
+                
+                if (data && data.url && data.url.trim() !== "") {
+                    container.innerHTML = `
+                        <iframe src="${data.url}" 
+                                style="width:100%; height: 500px; border: 1px solid var(--border-color); border-radius:8px;" 
+                                frameborder="0">
+                        </iframe>
+                        <p style="margin-top: 10px; text-align: center;">
+                            <a href="${data.url}" target="_blank" style="text-decoration: underline;">
+                                📄 Gazette als PDF öffnen (Vollbild)
+                            </a>
+                        </p>`;
+                } else {
+                    displayGazetteError('Keine gültige PDF-URL gefunden.');
+                }
+            }).catch(err => {
+                console.log("Fehler beim Laden der Gazette", err);
+                displayGazetteError('Netzwerk- oder CORS-Fehler.');
+            });
+    }
+
+    function toggleDarkMode() {
+        const phone = document.getElementById('phone');
+        const icon = document.getElementById('theme-icon');
+        phone.classList.toggle('dark-theme');
+        if(phone.classList.contains('dark-theme')) {
+            icon.innerText = '☀️';
+            localStorage.setItem('app-theme', 'dark');
+        } else {
+            icon.innerText = '🌙';
+            localStorage.setItem('app-theme', 'light');
+        }
+    }
+</script>
+
+</body>
+</html>
