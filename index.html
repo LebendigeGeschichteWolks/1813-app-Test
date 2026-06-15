@@ -6,7 +6,7 @@
     <title>Liebertwolkwitz 1813</title>
     
     <style>
-        /* Lokale Einbindung der Schriftarten */
+        /* Historische Überschriften-Schrift */
         @font-face {
             font-family: 'Vollkorn';
             src: url('fonts/Vollkorn-Regular.woff2') format('woff2');
@@ -21,31 +21,33 @@
             font-style: italic;
             font-display: swap;
         }
+
+        /* Neue UI-Schrift: Fira Sans */
         @font-face {
-            font-family: 'Ubuntu';
-            src: url('fonts/Ubuntu-Regular.woff2') format('woff2');
+            font-family: 'Fira Sans';
+            src: url('fonts/FiraSans-Regular.woff2') format('woff2');
             font-weight: 400;
             font-style: normal;
             font-display: swap;
         }
         @font-face {
-            font-family: 'Ubuntu';
-            src: url('fonts/Ubuntu-Medium.woff2') format('woff2');
+            font-family: 'Fira Sans';
+            src: url('fonts/FiraSans-Medium.woff2') format('woff2');
             font-weight: 500;
             font-style: normal;
             font-display: swap;
         }
         @font-face {
-            font-family: 'Ubuntu';
-            src: url('fonts/Ubuntu-Bold.woff2') format('woff2');
+            font-family: 'Fira Sans';
+            src: url('fonts/FiraSans-Bold.woff2') format('woff2');
             font-weight: 700;
             font-style: normal;
             font-display: swap;
         }
         @font-face {
-            font-family: 'Ubuntu';
-            src: url('fonts/Ubuntu-Light-Italic.woff2') format('woff2');
-            font-weight: 300;
+            font-family: 'Fira Sans';
+            src: url('fonts/FiraSans-Italic.woff2') format('woff2'); /* Fallback name if you didn't split Light/Regular Italic */
+            font-weight: 400;
             font-style: italic;
             font-display: swap;
         }
@@ -64,7 +66,8 @@
             --link-color: #0044cc; 
             --header-link-color: #000000;
             --divider-color: #888888; 
-            --hist-color: #2c3e50; /* Dynamische Farbe für die Kategorie "Historisches" */
+            --hist-bg: #2c3e50; 
+            --hist-text: #ffffff; 
         }
 
         .dark-theme {
@@ -81,7 +84,8 @@
             --link-color: #66b3ff; 
             --header-link-color: #ffffff;
             --divider-color: #555555;
-            --hist-color: #ffffff; /* Im Darkmode Invertiert (Weiß) */
+            --hist-bg: #ffffff; 
+            --hist-text: #000000; 
         }
 
         #loading-overlay {
@@ -108,12 +112,6 @@
             filter: invert(1);
         }
 
-        /* Helle Links im FAQ für den Dark-Mode */
-        .dark-theme .faq-answer a {
-            color: #88ccff !important;
-            font-weight: bold;
-        }
-
         .icon-wrapper {
             width: 20px;
             height: 20px;
@@ -135,7 +133,7 @@
         }
 
         body {
-            font-family: 'Ubuntu', sans-serif;
+            font-family: 'Fira Sans', sans-serif;
             background-color: var(--bg-phone);
             margin: 0;
             padding: 0;
@@ -353,20 +351,23 @@
 
         .sub-nav-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 8px;
             margin-bottom: 20px;
         }
         .sub-grid-item {
             text-align: center;
             font-size: 13px;
-            padding: 12px 5px; 
+            padding: 14px 2px;
             cursor: pointer;
             border-radius: 8px;
             background-color: var(--bg-subtab-inactive); 
             color: var(--text-muted);
             border: 1px solid var(--border-color);
             font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .sub-grid-item.active {
             background-color: var(--accent);
@@ -420,10 +421,12 @@
             cursor: pointer;
             font-size: 12px;
             text-align: center;
+            font-family: 'Fira Sans', sans-serif;
         }
         .day-btn.active {
             background: var(--accent);
             color: #ffffff !important;
+            font-weight: bold;
         }
 
         .search-input, .filter-select {
@@ -436,6 +439,7 @@
             margin-bottom: 10px;
             font-size: 14px;
             box-sizing: border-box;
+            font-family: 'Fira Sans', sans-serif;
         }
 
         .badge {
@@ -443,10 +447,19 @@
             font-size: 11px;
             padding: 4px 8px;
             border-radius: 12px;
-            background-color: var(--accent);
-            color: white;
             margin-top: 5px;
             font-weight: bold;
+        }
+        .loc-badge {
+            display: inline-block;
+            font-size: 11px;
+            padding: 3px 6px;
+            border-radius: 6px;
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--text-muted);
+            margin-right: 4px;
+            margin-top: 4px;
         }
 
         details.faq-item { 
@@ -471,6 +484,7 @@
         details.faq-item summary::-webkit-details-marker { display: none; }
         details.faq-item summary::after { content: '▼'; font-size: 12px; transition: transform 0.3s; color: var(--accent); }
         details.faq-item[open] summary::after { transform: rotate(180deg); }
+        
         .faq-answer { 
             padding: 0 15px 15px 15px; 
             font-size: 14px; 
@@ -480,8 +494,22 @@
             padding-top: 10px; 
             color: var(--text-muted); 
         }
+        .dark-theme .faq-answer { color: #ffffff !important; }
+        .dark-theme .faq-answer a { color: #88ccff !important; font-weight: bold; }
 
-        /* Zeitstrahl Dark-Mode sicher gemacht */
+        .lexikon-img-container {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+        .lexikon-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .timeline { position: relative; padding-left: 20px; margin-top: 20px; }
         .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent); }
         .timeline-item { position: relative; margin-bottom: 25px; }
@@ -489,11 +517,7 @@
         .timeline-content { background: var(--bg-card); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 13px; line-height: 1.5; color: var(--text-main); }
         .timeline-date { font-weight: bold; color: var(--accent); margin-bottom: 5px; display: block;}
 
-        .content-divider {
-            border: 0;
-            border-top: 1px solid var(--divider-color); 
-            margin: 25px 0;
-        }
+        .content-divider { border: 0; border-top: 1px solid var(--divider-color); margin: 25px 0; }
 
         .impressum-box {
             margin-top: 20px;
@@ -506,6 +530,32 @@
         .impressum-box h3 { font-size: 14px; margin-top: 0; border: none; padding: 0; color: var(--text-main); font-weight: bold; }
         .impressum-divider { border: 0; border-top: 1px solid var(--border-color); margin: 15px 0; }
         .loader { text-align: center; font-style: italic; color: var(--text-muted); padding: 20px; }
+
+        /* Karten Hinweis und Countdown Styles */
+        .map-hint {
+            font-size: 14px; 
+            font-weight: 500;
+            color: var(--text-main); 
+            text-align: center; 
+            margin-bottom: 12px;
+            background-color: var(--bg-card);
+            border-radius: 8px;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .countdown-box {
+            display: flex; justify-content: center; gap: 10px; margin-top: 20px;
+        }
+        .cd-item {
+            background: var(--bg-card); border: 2px solid var(--accent); border-radius: 10px;
+            padding: 12px 8px; text-align: center; flex: 1; max-width: 70px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .cd-number { font-size: 24px; font-weight: bold; font-family: 'Vollkorn', serif; color: var(--text-main); }
+        .cd-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-top: 5px; font-weight: bold; }
+        .cd-message { text-align: center; font-size: 18px; font-weight: bold; color: var(--accent); margin-top: 30px; font-family: 'Vollkorn', serif; line-height: 1.4; display: none; }
+
     </style>
 </head>
 <body>
@@ -596,48 +646,82 @@
         <div class="sub-nav-grid">
             <div id="sub-btn-programm" class="sub-grid-item active" onclick="switchSubTabEvent('sub-programm', this)">📅 Programm</div>
             <div id="sub-btn-lageplan" class="sub-grid-item" onclick="switchSubTabEvent('sub-lageplan', this)">🗺️ Lageplan</div>
+            
             <div id="sub-btn-wasistwo" class="sub-grid-item" onclick="switchSubTabEvent('sub-wasistwo', this)">📍 Was ist wo?</div>
             <div id="sub-btn-faq" class="sub-grid-item" onclick="switchSubTabEvent('sub-faq', this)">❓ Fragen</div>
+            
             <div id="sub-btn-umfrage" class="sub-grid-item" onclick="switchSubTabEvent('sub-umfrage', this)">🖊️ Umfrage</div>
+            <div id="sub-btn-countdown" class="sub-grid-item" onclick="switchSubTabEvent('sub-countdown', this)">⏳ Countdown</div>
         </div>
 
         <div id="sub-programm" class="sub-content active">
+            <div id="program-status-container"></div>
             <input type="text" id="search-program" class="search-input" placeholder="🔍 Programm nach Titel oder Uhrzeit durchsuchen..." onkeyup="renderEvents()">
             <div class="calendar-days" id="calendar-days-container"></div>
             <div id="program-list"><div class="loader">Programm wird live geladen...</div></div>
         </div>
 
         <div id="sub-lageplan" class="sub-content">
+            <div class="map-hint">💡 Nutze zwei Finger, um die Karte zu bewegen und zu zoomen.</div>
             <iframe class="map-iframe" style="width: 100%; height: 340px; border: 0; border-radius: 10px;" allowfullscreen allow="geolocation" src="https://umap.openstreetmap.de/de/map/karte-dorf-im-jahre-1813_141462?scaleControl=false&miniMap=false&scrollWheelZoom=false&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=false&onLoadPanel=none&captionBar=false&captionMenus=false&homeControl=false&captionControl=false&locateControl=true"></iframe>
         </div>
 
         <div id="sub-wasistwo" class="sub-content">
             <h2>Was ist wo?</h2>
-            <input type="text" id="search-location" class="search-input" placeholder="🔍 Nach Angeboten suchen..." onkeyup="renderLocations()">
             
-            <select id="filter-ort" class="filter-select" onchange="renderLocations()">
-                <option value="alle">--- Alle Orte anzeigen ---</option>
-                <option value="Markt">Markt</option>
-                <option value="Kirchhof">Kirchhof</option>
-                <option value="Liebnerhof (Markt 3)">Liebnerhof (Markt 3)</option>
-                <option value="Stiftsgut (Markt 11)">Stiftsgut (Markt 11)</option>
-                <option value="Gendarmeriestube (Markt 2)">Gendarmeriestube (Markt 2)</option>
-                <option value="Museumshof (Alte Tauchaer 1)">Museumshof (Alte Tauchaer 1)</option>
-                <option value="Kuhweide">Kuhweide</option>
-            </select>
+            <div id="location-status-container"></div>
+            <div id="location-controls">
+                <input type="text" id="search-location" class="search-input" placeholder="🔍 Nach Angeboten suchen..." onkeyup="renderLocations()">
+                
+                <select id="filter-ort" class="filter-select" onchange="renderLocations()">
+                    <option value="alle">--- Alle Orte anzeigen ---</option>
+                    <option value="Markt">Markt</option>
+                    <option value="Kirchhof">Kirchhof</option>
+                    <option value="Liebnerhof (Markt 3)">Liebnerhof (Markt 3)</option>
+                    <option value="Stiftsgut (Markt 11)">Stiftsgut (Markt 11)</option>
+                    <option value="Gendarmeriestube (Markt 2)">Gendarmeriestube (Markt 2)</option>
+                    <option value="Museumshof (Alte Tauchaer 1)">Museumshof (Alte Tauchaer 1)</option>
+                    <option value="Kuhweide">Kuhweide</option>
+                </select>
 
-            <select id="filter-kategorie" class="filter-select" onchange="renderLocations()">
-                <option value="alle">--- Alle Kategorien anzeigen ---</option>
-                <option value="Essen & Trinken">Essen & Trinken</option>
-                <option value="Handwerk">Handwerk</option>
-                <option value="Historisches">Historisches</option>
-                <option value="Einkaufen">Einkaufen</option>
-                <option value="für Kinder">für Kinder</option>
-                <option value="Service">Service</option>
-                <option value="Musik">Musik</option>
-            </select>
-
+                <select id="filter-kategorie" class="filter-select" onchange="renderLocations()">
+                    <option value="alle">--- Alle Kategorien anzeigen ---</option>
+                    <option value="Essen & Trinken">Essen & Trinken</option>
+                    <option value="Handwerk">Handwerk</option>
+                    <option value="Historisches">Historisches</option>
+                    <option value="Einkaufen">Einkaufen</option>
+                    <option value="für Kinder">für Kinder</option>
+                    <option value="Service">Service</option>
+                    <option value="Musik/Tanz/Unterhaltung">Musik/Tanz/Unterhaltung</option>
+                </select>
+            </div>
             <div id="location-list" style="margin-top: 15px;"></div>
+        </div>
+
+        <div id="sub-countdown" class="sub-content">
+            <h2>Der Countdown läuft...</h2>
+            <p>Seid live dabei, wenn sich die Tore für das nächste Dorf im Jahre 1813 öffnen!</p>
+            
+            <div class="countdown-box" id="cd-timer-box" style="display:none;">
+                <div class="cd-item">
+                    <div class="cd-number" id="cd-days">00</div>
+                    <div class="cd-label">Tage</div>
+                </div>
+                <div class="cd-item">
+                    <div class="cd-number" id="cd-hours">00</div>
+                    <div class="cd-label">Std</div>
+                </div>
+                <div class="cd-item">
+                    <div class="cd-number" id="cd-mins">00</div>
+                    <div class="cd-label">Min</div>
+                </div>
+                <div class="cd-item">
+                    <div class="cd-number" id="cd-secs">00</div>
+                    <div class="cd-label">Sek</div>
+                </div>
+            </div>
+            
+            <div class="cd-message" id="cd-message"></div>
         </div>
 
         <div id="sub-faq" class="sub-content">
@@ -658,7 +742,7 @@
 
     <div id="veranstaltungen" class="screen-content">
         <h1>Veranstaltungen 2026</h1>
-        <p>Hier findet ihr alle weiteren Märkte und Veranstaltungen außerhalb des großen Festwochenendes im Oktober.</p>
+        <p style="font-size: 16px; font-weight: 500; line-height: 1.5; margin-bottom: 20px;">Hier findet ihr alle weiteren Märkte und Veranstaltungen außerhalb des großen Festwochenendes im Oktober.</p>
         
         <input type="text" id="search-yearly" class="search-input" placeholder="🔍 Nach Titel, Ort oder Veranstalter durchsuchen..." onkeyup="renderYearlyEvents()">
         
@@ -678,13 +762,19 @@
         </div>
 
         <div id="sub-hist-karte" class="sub-content active">
+            <div class="map-hint">💡 Nutze zwei Finger, um die Karte zu bewegen und zu zoomen.</div>
             <iframe class="map-iframe" style="width: 100%; height: 340px; border: 0; border-radius: 10px;" allowfullscreen allow="geolocation" src="https://umap.openstreetmap.de/de/map/apelsteine-inkl-bilder-ausfuhrlichen-informationen_94176?scaleControl=false&miniMap=false&scrollWheelZoom=false&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=true"></iframe>
             <p style="margin-top: 5px; font-size: 12px; text-align: center;"><a href="https://umap.openstreetmap.de/de/map/apelsteine-inkl-bilder-ausfuhrlichen-informationen_94176?scaleControl=false&miniMap=false&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=true" target="_blank">Vollbildanzeige öffnen</a></p>
         </div>
 
         <div id="sub-hist-lexikon" class="sub-content">
             <h2>Lexikon</h2>
-            <input type="text" id="search-lexikon" class="search-input" placeholder="🔍 Eintrag suchen..." onkeyup="renderLexikon()">
+         
+            <div style="position: relative; width: 100%; margin-bottom: 10px;">
+                <input type="text" id="search-lexikon" class="search-input" style="margin-bottom: 0; padding-right: 35px;" placeholder="🔍 Eintrag suchen..." onkeyup="handleLexikonSearch()">
+                <button id="clear-lexikon-search" onclick="clearLexikonSearch()" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 16px; cursor: pointer; color: var(--text-muted); display: none; padding: 5px; z-index: 5;">✖️</button>
+            </div>
+            
             <div id="lexikon-list">
                 <div class="loader">Wissen wird entstaubt...</div>
             </div>
@@ -723,13 +813,13 @@
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
                         <span class="timeline-date">18. Oktober 1813</span>
-                        Entscheidungstag: Die verbündeten Truppen drängen die französische Armee zurück in Richtung Leipzig.
+                        Entscheidungstag: Die Franzosen haben sich am 17. weiter nach Leipzig zurückgezogen und die verbündeten Truppen drängen die französische Armee immer weiter zurück in Richtung Leipzig. Trotzdem können die Franzosen z.B. Probstheida halten.
                     </div>
                 </div>
             </div>
             
             <div class="card" style="border-left-color: #777; margin-top: 20px; font-style: italic; font-size:12px;">
-                (Dieser Zeitstrahl kann von uns noch mit echten, detaillierten Fakten gefüllt werden!)
+                (Dieser Zeitstrahl wird noch mit detaillierten Fakten gefüllt!)
             </div>
         </div>
     </div>
@@ -844,6 +934,7 @@
     const FAQ_URL = BASE_SCRIPT_URL + "?action=faq"; 
     const LEXIKON_URL = BASE_SCRIPT_URL + "?action=lexikon";
     const GAZETTE_URL = BASE_SCRIPT_URL + "?action=gazette";
+    const COUNTDOWN_URL = BASE_SCRIPT_URL + "?action=countdown";
 
     let globalEvents = [];
     let globalLocations = [];
@@ -852,37 +943,42 @@
     let detectedDays = []; 
     let currentDayIndex = 0; 
     let preLinktreeTab = 'start'; 
+    let countdownInterval;
+
+    // NEU: Globale Variable für den aktiven Lexikon-Übertab
+    let currentLexikonTab = 'Alle';
 
     const categoryColors = {
         "Essen & Trinken": "#d35400", 
         "Handwerk": "#8e44ad",        
-        "Historisches": "var(--hist-color)", // Dynamisch für Invertierung
+        "Historisches": "var(--hist-bg)", 
         "Einkaufen": "#27ae60",       
         "für Kinder": "#f39c12",      
         "Service": "#7f8c8d",          
-        "Musik": "#3498db" 
+        "Musik/Tanz/Unterhaltung": "#3498db" 
+    };
+
+    const categoryTextColors = {
+        "Historisches": "var(--hist-text)" 
     };
 
     const fallbackEvents = [
-        { id: "1", tag: "23.10.2026", zeit: "10:00", ort: "Marktplatz", titel: "Eröffnung des Dorfes (Fallback)", beschreibung: "Das historische Treiben beginnt." }
+        { id: "1", tag: "23.10.2026", zeit: "10:00", ort: "Marktplatz", titel: "Eröffnung des Dorfes (Fallback)", beschreibung: "Das historische Treiben beginnt.", status: "aktiv" }
     ];
 
     const fallbackLocations = [
-        { ort: "Stiftsgut (Markt 11)", kategorien: ["Handwerk"], titel: "Die Seilerei (Fallback)", beschreibung: "Hier wird nach alter Tradition aus Hanf zähes Tauwerk gedreht." }
+        { orte: ["Stiftsgut (Markt 11)"], kategorien: ["Handwerk"], titel: "Die Seilerei (Fallback)", beschreibung: "Hier wird nach alter Tradition aus Hanf zähes Tauwerk gedreht.", status: "aktiv" }
     ];
 
     const fallbackYearly = [
-        { titel: "Hof-Advent (Fallback)", ort: "Stiftsgut Liebertwolkwitz", tag: "1. - 3. Dez 2026", zeit: "14:00 - 20:00 Uhr", veranstalter: "Hofgenossenschaft", beschreibung: "Unser traditioneller, besinnlicher Weihnachtsmarkt auf dem Stiftsgut.", preis: "Eintritt frei", highlight: "Ja" },
-        { titel: "Historische Führungen (Fallback)", ort: "Dorfkern", tag: "Ganzjährig", zeit: "auf Anfrage", veranstalter: "Lebendige Geschichte Wolks", beschreibung: "Erlebt die Geschichte hautnah bei unseren geführten Rundgängen.", preis: "5,00 € pro Person", highlight: "" }
+        { titel: "Hof-Advent (Fallback)", ort: "Stiftsgut Liebertwolkwitz", tag: "1. - 3. Dez 2026", zeit: "14:00 - 20:00 Uhr", veranstalter: "Hofgenossenschaft", beschreibung: "Unser traditioneller, besinnlicher Weihnachtsmarkt.", preis: "Eintritt frei", highlight: "Ja" }
     ];
 
-    // Neue globale Funktion für Bild-Fallbacks
     function handleImageError(img) {
         img.onerror = null; 
         img.src = 'images/fallback/bildfb.webp';
     }
 
-    // Neue Funktion für Karten-Offline-Fallback
     function checkOnlineStatusForMaps() {
         const isOnline = navigator.onLine;
         const maps = document.querySelectorAll('.map-iframe');
@@ -942,6 +1038,7 @@
         fetchFaqData(); 
         fetchLexikonData(); 
         fetchGazetteData();
+        fetchCountdownData();
     }
 
     function loadFromCache() {
@@ -962,6 +1059,65 @@
 
         const cLex = localStorage.getItem('cache-lexikon');
         if(cLex) { globalLexikon = JSON.parse(cLex); renderLexikon(); }
+
+        const cCount = localStorage.getItem('cache-countdown');
+        if(cCount) { const d = JSON.parse(cCount); startCountdown(d.datum, d.uhrzeit); }
+    }
+
+    function parseGermanDate(dateStr, timeStr) {
+        if (!dateStr) return null;
+        const parts = dateStr.split('.');
+        if (parts.length !== 3) return null;
+        const d = parseInt(parts[0], 10);
+        const m = parseInt(parts[1], 10) - 1; 
+        const y = parseInt(parts[2], 10);
+        
+        const tParts = (timeStr || "00:00").split(':');
+        const hr = tParts.length > 0 ? parseInt(tParts[0], 10) : 0;
+        const min = tParts.length > 1 ? parseInt(tParts[1], 10) : 0;
+        
+        return new Date(y, m, d, hr, min, 0).getTime();
+    }
+
+    function startCountdown(dateStr, timeStr) {
+        const targetTime = parseGermanDate(dateStr, timeStr);
+        if (!targetTime) return;
+
+        clearInterval(countdownInterval);
+        
+        function update() {
+            const now = new Date().getTime();
+            const diff = targetTime - now;
+
+            const box = document.getElementById('cd-timer-box');
+            const msg = document.getElementById('cd-message');
+
+            if (diff <= 0) {
+                if(box) box.style.display = 'none';
+                if(msg) {
+                    msg.style.display = 'block';
+                    msg.innerHTML = "Viel Spaß beim diesjährigen Dorf im Jahre 1813 🎉";
+                }
+                clearInterval(countdownInterval);
+                return;
+            }
+
+            if(box) box.style.display = 'flex';
+            if(msg) msg.style.display = 'none';
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('cd-days').innerText = String(d).padStart(2, '0');
+            document.getElementById('cd-hours').innerText = String(h).padStart(2, '0');
+            document.getElementById('cd-mins').innerText = String(m).padStart(2, '0');
+            document.getElementById('cd-secs').innerText = String(s).padStart(2, '0');
+        }
+        
+        update();
+        countdownInterval = setInterval(update, 1000); 
     }
 
     function isPastEvent(dateStr) {
@@ -1035,8 +1191,7 @@
         const banner = document.getElementById('pigeon-banner');
         if (navigator.onLine) banner.style.display = 'none';
         else banner.style.display = 'flex';
-        
-        checkOnlineStatusForMaps(); // Karten Status prüfen
+        checkOnlineStatusForMaps(); 
     }
 
     function loadInitialData(eventsArray) {
@@ -1122,6 +1277,11 @@
         document.getElementById(subTabId).classList.add('active');
         element.classList.add('active');
         localStorage.setItem('last-sub-tab-historic', subTabId);
+        
+        // Aktualisiert das Lexikon beim Wechsel auf den Tab (um Styling-Probleme bei display:none zu umgehen)
+        if (subTabId === 'sub-hist-lexikon') {
+            renderLexikon();
+        }
     }
 
     function switchSubTabEvent(subTabId, element) {
@@ -1182,36 +1342,32 @@
         return "";
     }
 
-    function displayRenderError(containerId, technicalDetails) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-        container.innerHTML = `
-            <div class="card" style="border-left-color: var(--accent); text-align: center; padding: 20px 15px;">
-                <span style="font-size: 28px; display:block; margin-bottom:10px;">📯</span>
-                <h3 style="margin: 0 0 5px 0; color: var(--accent);">Fehler aus dem Kontor!</h3>
-                <p style="margin: 0; font-size: 13px; color: var(--text-muted); line-height:1.4;">
-                    Das Google Skript meldet folgendes Problem:<br>
-                    <span style="font-size:12px; font-weight:bold; color:var(--accent); display:block; margin-top:5px;">${technicalDetails}</span>
-                </p>
-            </div>
-        `;
-    }
-
-    function displayGazetteError(technicalDetails) {
-        const container = document.getElementById('gazette-content');
-        if (container) {
-            container.innerHTML = `<div class="card" style="border-left-color: var(--accent); text-align: center; padding: 20px;">
-                <span style="font-size:28px;">🗞️</span>
-                <p style="margin-top:10px; font-weight:bold;">Der Zeitungsbote stottert...</p>
-                <p style="font-size:12px; color:var(--accent);">${technicalDetails || ''}</p>
-            </div>`;
-        }
-    }
-
     function renderEvents() {
         const listContainer = document.getElementById('program-list');
-        const query = document.getElementById('search-program').value.trim().toLowerCase();
+        const statusContainer = document.getElementById('program-status-container');
+        const searchInput = document.getElementById('search-program');
+        const daysContainer = document.getElementById('calendar-days-container');
+        
         listContainer.innerHTML = "";
+        
+        if (globalEvents.length > 0 && globalEvents[0].status === 'pausiert') {
+            statusContainer.innerHTML = `
+                <div class="card" style="text-align:center; padding: 25px 15px; margin-top: 15px;">
+                    <span style="font-size:35px;">🧡</span>
+                    <p style="margin-top:15px; font-weight:bold; font-size:16px;">Vielen Dank für euren Besuch des Dorfes im in diesem Jahr.</p>
+                    <p style="font-size:14px; color:var(--text-muted); line-height: 1.5;">Wir sitzen bereits fleißig am Programm für das nächste Dorf. Sobald jeder seinen Platz & Uhrzeit kennt, findet ihr hier das aktuelle Programm🧡</p>
+                </div>
+            `;
+            searchInput.style.display = 'none';
+            daysContainer.style.display = 'none';
+            return;
+        } else {
+            statusContainer.innerHTML = '';
+            searchInput.style.display = 'block';
+            daysContainer.style.display = 'flex';
+        }
+
+        const query = searchInput.value.trim().toLowerCase();
         const targetDayIso = detectedDays[currentDayIndex];
 
         if (!targetDayIso) {
@@ -1262,14 +1418,33 @@
 
     function renderLocations() {
         const listContainer = document.getElementById('location-list');
+        const statusContainer = document.getElementById('location-status-container');
+        const controls = document.getElementById('location-controls');
         if (!listContainer) return;
+        
+        if (globalLocations.length > 0 && globalLocations[0].status === 'pausiert') {
+            statusContainer.innerHTML = `
+                <div class="card" style="text-align:center; padding: 25px 15px; margin-top: 15px;">
+                    <span style="font-size:35px;">🧡</span>
+                    <p style="margin-top:15px; font-weight:bold; font-size:16px;">Vielen Dank für euren Besuch des Dorfes im in diesem Jahr.</p>
+                    <p style="font-size:14px; color:var(--text-muted); line-height: 1.5;">Wir sitzen bereits fleißig am Programm für das nächste Dorf. Sobald jeder seinen Platz & Uhrzeit kennt, findet ihr hier das aktuelle Programm🧡</p>
+                </div>
+            `;
+            controls.style.display = 'none';
+            listContainer.innerHTML = '';
+            return;
+        } else {
+            statusContainer.innerHTML = '';
+            controls.style.display = 'block';
+        }
+
         const selectedOrt = document.getElementById('filter-ort').value;
         const selectedKat = document.getElementById('filter-kategorie').value;
         const query = document.getElementById('search-location').value.trim().toLowerCase();
         listContainer.innerHTML = "";
 
         const filtered = globalLocations.filter(loc => {
-            const matchOrt = (selectedOrt === "alle" || loc.ort === selectedOrt);
+            const matchOrt = (selectedOrt === "alle" || (loc.orte && loc.orte.includes(selectedOrt)));
             const matchKat = (selectedKat === "alle" || (loc.kategorien && loc.kategorien.includes(selectedKat)));
             let matchSearch = true;
             if (query.length >= 2) {
@@ -1297,15 +1472,23 @@
             if (loc.kategorien && loc.kategorien.length > 0) {
                 loc.kategorien.forEach(kat => {
                     let badgeColor = categoryColors[kat] || "var(--accent)";
-                    badgesHtml += `<span class="badge" style="background-color: ${badgeColor}; margin-right: 4px;">${kat}</span>`;
+                    let textColor = categoryTextColors[kat] || "#ffffff";
+                    badgesHtml += `<span class="badge" style="background-color: ${badgeColor}; color: ${textColor}; margin-right: 4px;">${kat}</span>`;
+                });
+            }
+
+            let ortTags = '';
+            if (loc.orte && loc.orte.length > 0) {
+                loc.orte.forEach(o => {
+                    ortTags += `<span class="loc-badge">📍 ${o}</span>`;
                 });
             }
             
             card.innerHTML = `
                 <h3 style="font-size:16px; margin: 0 0 5px 0; font-family:'Vollkorn',serif; color:var(--accent); font-weight:bold;">${loc.titel || ''}</h3>
-                <p style="margin:0 0 5px 0; font-size: 13px;">📍 <strong>${loc.ort || ''}</strong></p>
+                <div style="margin-bottom: 8px;">${ortTags}</div>
                 <p style="margin:0 0 8px 0; font-size:13px; white-space: pre-wrap;">${loc.beschreibung || ''}</p>
-                ${badgesHtml}
+                <div>${badgesHtml}</div>
             `;
             listContainer.appendChild(card);
         });
@@ -1410,6 +1593,41 @@
         });
     }
 
+    // NEU: Funktionen zur Lexikon-Suchfeld-Steuerung und Tabs
+    function filterLexikonTab(tabName, element) {
+        document.querySelectorAll('#lexikon-tabs .sub-nav-item-historic').forEach(item => item.classList.remove('active'));
+        element.classList.add('active');
+        currentLexikonTab = tabName;
+        renderLexikon();
+    }
+
+    function handleLexikonSearch() {
+        const query = document.getElementById('search-lexikon').value.trim();
+        const clearBtn = document.getElementById('clear-lexikon-search');
+        
+        if (clearBtn) {
+            if (query.length > 0) {
+                clearBtn.style.display = 'block';
+            } else {
+                clearBtn.style.display = 'none';
+            }
+        }
+        renderLexikon();
+    }
+
+    function clearLexikonSearch() {
+        const searchInput = document.getElementById('search-lexikon');
+        if (searchInput) {
+            searchInput.value = '';
+            searchInput.focus();
+        }
+        const clearBtn = document.getElementById('clear-lexikon-search');
+        if (clearBtn) {
+            clearBtn.style.display = 'none';
+        }
+        renderLexikon();
+    }
+
     function renderLexikon() {
         const container = document.getElementById('lexikon-list');
         if(!container) return;
@@ -1421,7 +1639,21 @@
             return;
         }
 
-        const filtered = globalLexikon.filter(item => {
+        // 1. Filtern nach: anzeigen === 'ja', aktivem Übertab UND Suchbegriff
+        let filtered = globalLexikon.filter(item => {
+            // Prüfen auf Spalte F ("anzeigen"). Nur wenn exakt "ja" drin steht.
+            const istAktiv = item.anzeigen && item.anzeigen.trim().toLowerCase() === 'ja';
+            if (!istAktiv) return false;
+
+            // Prüfen, ob der Eintrag zum aktuell gewählten Übertab (Kategorie) passt
+            const itemKat = item.kategorie ? item.kategorie.trim() : "Allgemein";
+            if (currentLexikonTab !== 'Alle') {
+                if (itemKat.toLowerCase() !== currentLexikonTab.toLowerCase()) {
+                    return false;
+                }
+            }
+
+            // Suchbegriff prüfen (wie im Original ab 2 Zeichen)
             if (query.length >= 2) {
                 return (item.eintrag || "").toLowerCase().includes(query);
             }
@@ -1433,25 +1665,73 @@
             return;
         }
 
+        // 2. Gruppieren nach Kategorien (Behält deine Struktur bei)
+        const groups = {};
         filtered.forEach(item => {
-            if(item.eintrag) {
-                const details = document.createElement('details');
-                details.className = 'faq-item';
-                
-                let imgHtml = '';
-                if (item.bild && item.bild.trim() !== '') {
-                    imgHtml = `<img src="${item.bild}" alt="${item.eintrag}" style="width:100%; border-radius:8px; margin-bottom:10px;" onerror="handleImageError(this)">`;
-                }
+            const kat = item.kategorie ? item.kategorie.trim() : "Allgemein";
+            if (!groups[kat]) groups[kat] = [];
+            groups[kat].push(item);
+        });
 
-                details.innerHTML = `
-                    <summary>${item.eintrag}</summary>
-                    <div class="faq-answer">
-                        ${imgHtml}
-                        ${item.inhalt || ''}
-                    </div>
-                `;
-                container.appendChild(details);
-            }
+        const sortedKategorien = Object.keys(groups).sort((a, b) => a.localeCompare(b));
+
+        // 3. Rendern der Kategorien und Einträge (Original-Look mit details/summary)
+        sortedKategorien.forEach(kat => {
+            const sectionHeader = document.createElement('h3');
+            sectionHeader.className = 'faq-section-title';
+            sectionHeader.innerText = kat;
+            container.appendChild(sectionHeader);
+
+            groups[kat].sort((a, b) => (a.eintrag || "").localeCompare(b.eintrag || ""));
+
+            groups[kat].forEach(item => {
+                if(item.eintrag) {
+                    const details = document.createElement('details');
+                    details.className = 'faq-item';
+                    
+                    let imgHtml = '';
+                    if (item.bild && item.bild.trim() !== '') {
+                        let BildPfad = item.bild.trim();
+                        
+                        // Entfernt HTML-Tags aus der Bildspalte
+                        BildPfad = BildPfad.replace(/<[^>]*>/g, '').trim();
+
+                        if (!BildPfad.startsWith('images/lexikon/')) {
+                            if (BildPfad.startsWith('images/')) {
+                                BildPfad = BildPfad.replace('images/', 'images/lexikon/');
+                            } else {
+                                BildPfad = 'images/lexikon/' + BildPfad;
+                            }
+                        }
+
+                        imgHtml = `<div class="lexikon-img-container" style="margin-top: 5px; margin-bottom: 10px;"><img src="${BildPfad}" alt="${item.eintrag}" onerror="handleImageError(this)"></div>`;
+                        
+                        if (item.unterschrift && item.unterschrift.trim() !== '') {
+                            let uText = item.unterschrift.trim();
+                            uText = uText.replace(/^(<br\s*\/?>|\s)+/gi, '');
+                            imgHtml += `<div style="font-size: 11px; color: var(--text-muted); text-align: center; margin-bottom: 15px; font-style: italic; white-space: pre-wrap;">${uText}</div>`;
+                        } else {
+                            imgHtml += `<div style="margin-bottom: 10px;"></div>`;
+                        }
+                    }
+
+                    // Inhalt säubern (Absatz-Fix)
+                    let saubererInhalt = (item.inhalt || '').trim();
+                    saubererInhalt = saubererInhalt.replace(/^(<br\s*\/?>|\s)+/gi, '');
+
+                    // Fallback für leere Zellen (Colporteur-Text)
+                    if (saubererInhalt === '') {
+                        saubererInhalt = '<div style="font-style: italic; color: var(--text-muted); margin-top: 5px;">🐎📖 Huch? Der Colporteur hat diesen Eintrag wohl noch nicht geliefert.</div>';
+                    }
+
+                    // Zusammenbau der Box
+                    details.innerHTML = `
+                        <summary>${item.eintrag}</summary>
+                        <div class="faq-answer" style="white-space: pre-wrap; border-top: none; padding-top: 0; margin-top: 0;">${imgHtml}${saubererInhalt}</div>
+                    `;
+                    container.appendChild(details);
+                }
+            });
         });
     }
 
@@ -1490,103 +1770,71 @@
         fetch(PROGRAM_URL)
             .then(response => response.json())
             .then(data => {
-                if (data.error) {
-                    displayRenderError('program-list', data.message);
-                    return;
-                }
+                if (data.error) return;
                 if(data && data.length > 0) {
                     localStorage.setItem('cache-programm', JSON.stringify(data));
                     loadInitialData(data);
                 }
-            }).catch(err => {
-                console.log("Fehler beim Live-Laden.", err);
-                displayRenderError('program-list', 'Datenübertragung abgebrochen (CORS oder Netzwerkfehler)');
-            });
+            }).catch(err => console.log("Fehler", err));
     }
 
     function fetchLocationData() {
         fetch(LOCATION_URL)
             .then(response => response.json())
             .then(data => {
-                if (data.error) {
-                    displayRenderError('location-list', data.message);
-                    return;
-                }
+                if (data.error) return;
                 if(data && data.length > 0) {
                     localStorage.setItem('cache-wasistwo', JSON.stringify(data));
                     globalLocations = data;
                     renderLocations();
                 }
-            }).catch(err => {
-                console.log("Fehler beim Live-Laden der Orte.", err);
-                displayRenderError('location-list', 'Verbindung zum Stiftsgut verloren (CORS oder Netzwerkfehler)');
-            });
+            }).catch(err => console.log("Fehler", err));
     }
 
     function fetchYearlyData() {
         fetch(YEARLY_URL)
             .then(response => response.json())
             .then(data => {
-                if (data.error) {
-                    displayRenderError('yearly-list', data.message);
-                    return;
-                }
+                if (data.error) return;
                 if (data && data.length > 0) {
                     localStorage.setItem('cache-termine', JSON.stringify(data));
                     globalYearlyEvents = data;
                     renderYearlyEvents();
                 }
-            }).catch(err => {
-                console.log("Fehler beim Live-Laden des Jahresprogramms.", err);
-                displayRenderError('yearly-list', 'Archiv unleserlich (CORS oder Netzwerkfehler)');
-            });
+            }).catch(err => console.log("Fehler", err));
     }
 
     function fetchFaqData() {
         fetch(FAQ_URL)
             .then(response => response.json())
             .then(data => {
-                if (data.error) {
-                    document.getElementById('faq-list').innerHTML = `<p>${data.message}</p>`;
-                    return;
-                }
+                if (data.error) return;
                 if (data && data.length > 0) {
                     localStorage.setItem('cache-faq', JSON.stringify(data));
                     renderFaq(data);
                 }
-            }).catch(err => {
-                console.log("Fehler beim Live-Laden FAQ", err);
-            });
+            }).catch(err => console.log("Fehler FAQ", err));
     }
 
     function fetchLexikonData() {
         fetch(LEXIKON_URL)
             .then(response => response.json())
             .then(data => {
-                if (data.error) {
-                    document.getElementById('lexikon-list').innerHTML = `<p>${data.message}</p>`;
-                    return;
-                }
+                if (data.error) return;
                 if (data && data.length > 0) {
                     localStorage.setItem('cache-lexikon', JSON.stringify(data));
                     globalLexikon = data;
                     renderLexikon();
                 }
-            }).catch(err => {
-                console.log("Fehler beim Live-Laden Lexikon", err);
-            });
+            }).catch(err => console.log("Fehler Lexikon", err));
     }
 
     function fetchGazetteData() {
         fetch(GAZETTE_URL)
             .then(response => response.json())
             .then(data => {
-                if (data.error) {
-                    displayGazetteError(data.message);
-                    return;
-                }
+                if (data.error) return;
                 const container = document.getElementById('gazette-content');
-                
                 if (data && data.url && data.url.trim() !== "") {
                     container.innerHTML = `
                         <iframe src="${data.url}" 
@@ -1598,13 +1846,20 @@
                                 📄 Gazette als PDF öffnen (Vollbild)
                             </a>
                         </p>`;
-                } else {
-                    displayGazetteError('Keine gültige PDF-URL gefunden.');
                 }
-            }).catch(err => {
-                console.log("Fehler beim Laden der Gazette", err);
-                displayGazetteError('Netzwerk- oder CORS-Fehler.');
-            });
+            }).catch(err => console.log("Fehler Gazette", err));
+    }
+
+    function fetchCountdownData() {
+        fetch(COUNTDOWN_URL)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) return;
+                if (data && data.datum) {
+                    localStorage.setItem('cache-countdown', JSON.stringify(data));
+                    startCountdown(data.datum, data.uhrzeit);
+                }
+            }).catch(err => console.log("Fehler Countdown", err));
     }
 
     function toggleDarkMode() {
