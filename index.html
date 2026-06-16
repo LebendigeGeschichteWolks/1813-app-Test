@@ -46,7 +46,7 @@
         }
         @font-face {
             font-family: 'Fira Sans';
-            src: url('fonts/FiraSans-Italic.woff2') format('woff2'); /* Fallback name if you didn't split Light/Regular Italic */
+            src: url('fonts/FiraSans-Italic.woff2') format('woff2');
             font-weight: 400;
             font-style: italic;
             font-display: swap;
@@ -945,9 +945,6 @@
     let preLinktreeTab = 'start'; 
     let countdownInterval;
 
-    // NEU: Globale Variable für den aktiven Lexikon-Übertab
-    let currentLexikonTab = 'Alle';
-
     const categoryColors = {
         "Essen & Trinken": "#d35400", 
         "Handwerk": "#8e44ad",        
@@ -1593,14 +1590,6 @@
         });
     }
 
-    // NEU: Funktionen zur Lexikon-Suchfeld-Steuerung und Tabs
-    function filterLexikonTab(tabName, element) {
-        document.querySelectorAll('#lexikon-tabs .sub-nav-item-historic').forEach(item => item.classList.remove('active'));
-        element.classList.add('active');
-        currentLexikonTab = tabName;
-        renderLexikon();
-    }
-
     function handleLexikonSearch() {
         const query = document.getElementById('search-lexikon').value.trim();
         const clearBtn = document.getElementById('clear-lexikon-search');
@@ -1628,6 +1617,8 @@
         renderLexikon();
     }
 
+    // NEU: Voll dynamisches Lexikon-System (Doppeltes Akkordeon)
+    // NEU: Voll dynamisches Lexikon-System (Doppeltes Akkordeon)
     function renderLexikon() {
         const container = document.getElementById('lexikon-list');
         if(!container) return;
@@ -1639,23 +1630,15 @@
             return;
         }
 
-        // 1. Filtern nach: anzeigen === 'ja', aktivem Übertab UND Suchbegriff
+        // 1. Filtern nach: anzeigen === 'ja' UND Suchbegriff
         let filtered = globalLexikon.filter(item => {
-            // Prüfen auf Spalte F ("anzeigen"). Nur wenn exakt "ja" drin steht.
             const istAktiv = item.anzeigen && item.anzeigen.trim().toLowerCase() === 'ja';
             if (!istAktiv) return false;
 
-            // Prüfen, ob der Eintrag zum aktuell gewählten Übertab (Kategorie) passt
-            const itemKat = item.kategorie ? item.kategorie.trim() : "Allgemein";
-            if (currentLexikonTab !== 'Alle') {
-                if (itemKat.toLowerCase() !== currentLexikonTab.toLowerCase()) {
-                    return false;
-                }
-            }
-
-            // Suchbegriff prüfen (wie im Original ab 2 Zeichen)
             if (query.length >= 2) {
-                return (item.eintrag || "").toLowerCase().includes(query);
+                const eintragMatch = (item.eintrag || "").toLowerCase().includes(query);
+                const inhaltMatch = (item.inhalt || "").toLowerCase().includes(query);
+                return eintragMatch || inhaltMatch;
             }
             return true;
         });
@@ -1665,35 +1648,59 @@
             return;
         }
 
-        // 2. Gruppieren nach Kategorien (Behält deine Struktur bei)
+        // 2. Gruppieren nach Kategorien (Spalte E)
         const groups = {};
         filtered.forEach(item => {
-            const kat = item.kategorie ? item.kategorie.trim() : "Allgemein";
+            const kat = (item.kategorie && item.kategorie.trim() !== "") ? item.kategorie.trim() : "Allgemein";
             if (!groups[kat]) groups[kat] = [];
             groups[kat].push(item);
         });
 
         const sortedKategorien = Object.keys(groups).sort((a, b) => a.localeCompare(b));
+        
+        // ====================================================================
+        // HIER KANNST DU DEINE EMOJIS FÜR DIE KATEGORIEN SELBST FESTLEGEN
+        // ====================================================================
+        const lexikonEmojis = {
+            "Handwerk, Berufe, Tätigkeiten": "⚒️",
+		"Staaten, Politik, Maßeinheiten": "🗺️",
+		"Ereignisse": "🎲",
+            "Personen": "👤",
+            "Militärische Begriffe": "🛡️",
+            "Allgemein": "📖",
+            "Orte & Denkmäler": "🏛️",
+		"Zivilleben": "🕊️",
+            // Füge einfach neue Zeilen hinzu, z.B.: "Häuser": "🏡",
+            // Das hier ist der Fallback, falls du mal vergisst eins einzutragen:
+            "Standard": "📂" 
+        };
+        // ====================================================================
 
-        // 3. Rendern der Kategorien und Einträge (Original-Look mit details/summary)
+        let html = '';
+
+        // 3. Rendern der Kategorien (Akkordeon Ebene 1) und Einträge (Akkordeon Ebene 2)
         sortedKategorien.forEach(kat => {
-            const sectionHeader = document.createElement('h3');
-            sectionHeader.className = 'faq-section-title';
-            sectionHeader.innerText = kat;
-            container.appendChild(sectionHeader);
-
             groups[kat].sort((a, b) => (a.eintrag || "").localeCompare(b.eintrag || ""));
+            
+            const isOpen = query.length >= 2 ? 'open' : '';
+            
+            // Emoji aus dem Wörterbuch holen (oder Standard nehmen)
+            const katEmoji = lexikonEmojis[kat] || lexikonEmojis["Standard"];
+
+            html += `
+            <details class="faq-item" style="margin-bottom: 15px; border-left: 4px solid var(--accent);" ${isOpen}>
+                <summary style="background: var(--bg-card); font-size: 16px; padding: 15px; font-weight: bold; border-radius: 8px; cursor: pointer;">
+                    <span>${katEmoji} ${kat} (${groups[kat].length})</span>
+                </summary>
+                <div style="padding: 10px 5px 5px 5px; background: rgba(0,0,0,0.02); border-radius: 0 0 8px 8px;">
+            `;
 
             groups[kat].forEach(item => {
                 if(item.eintrag) {
-                    const details = document.createElement('details');
-                    details.className = 'faq-item';
-                    
                     let imgHtml = '';
                     if (item.bild && item.bild.trim() !== '') {
                         let BildPfad = item.bild.trim();
                         
-                        // Entfernt HTML-Tags aus der Bildspalte
                         BildPfad = BildPfad.replace(/<[^>]*>/g, '').trim();
 
                         if (!BildPfad.startsWith('images/lexikon/')) {
@@ -1715,24 +1722,34 @@
                         }
                     }
 
-                    // Inhalt säubern (Absatz-Fix)
                     let saubererInhalt = (item.inhalt || '').trim();
                     saubererInhalt = saubererInhalt.replace(/^(<br\s*\/?>|\s)+/gi, '');
 
-                    // Fallback für leere Zellen (Colporteur-Text)
                     if (saubererInhalt === '') {
                         saubererInhalt = '<div style="font-style: italic; color: var(--text-muted); margin-top: 5px;">🐎📖 Huch? Der Colporteur hat diesen Eintrag wohl noch nicht geliefert.</div>';
                     }
 
-                    // Zusammenbau der Box
-                    details.innerHTML = `
-                        <summary>${item.eintrag}</summary>
-                        <div class="faq-answer" style="white-space: pre-wrap; border-top: none; padding-top: 0; margin-top: 0;">${imgHtml}${saubererInhalt}</div>
+                    // HIER WURDE DIE LUPE (🔍) VOR DEM EINTRAG ENTFERNT
+                    html += `
+                    <details class="faq-item" style="margin-bottom: 8px; border-left: 3px solid var(--text-muted); background: var(--bg-card);">
+                        <summary style="padding: 12px 15px; font-size: 14px; font-weight: 500; cursor: pointer;">
+                            <span>${item.eintrag}</span>
+                        </summary>
+                        <div class="faq-answer" style="padding: 12px 15px; border-top: 1px dashed var(--border-color); font-size: 14px; line-height: 1.5; margin-top: 0;">
+                            ${imgHtml}${saubererInhalt}
+                        </div>
+                    </details>
                     `;
-                    container.appendChild(details);
                 }
             });
+
+            html += `
+                </div>
+            </details>
+            `;
         });
+
+        container.innerHTML = html;
     }
 
     function showStarTooltip(event) {
